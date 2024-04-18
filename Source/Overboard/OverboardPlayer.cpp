@@ -19,8 +19,9 @@ AOverboardPlayer::AOverboardPlayer()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	_boardDefaultPosition = CreateSubObjects<USceneComponent>(RootComponent, "Idle default board position");
-	_boardMesh = CreateSubObjects<UStaticMeshComponent>(RootComponent, "Board mesh");
+	_boardContainer = CreateSubObjects<USceneComponent>(RootComponent, "Board container");
+	_boardDefaultPosition = CreateSubObjects<USceneComponent>(_boardContainer, "Idle default board position");
+	_boardMesh = CreateSubObjects<UStaticMeshComponent>(_boardContainer, "Board mesh");
 	_springArm = CreateSubObjects<USpringArmComponent>(RootComponent, "Spring arm");
 	_mainCamera = CreateSubObjects<UCameraComponent>(_springArm, "Main camera");
 }

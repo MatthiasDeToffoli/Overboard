@@ -36,6 +36,11 @@ private:
 	UCameraComponent* _mainCamera;
 
 	// Board ----------------------------------------------------------------------------------------------------
+	/**
+	 * Default position of the board, used for doing some calculation on the board movement
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Board", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* _boardContainer;
 
 	/**
 	 * Mesh of the board we can move with some actions 
