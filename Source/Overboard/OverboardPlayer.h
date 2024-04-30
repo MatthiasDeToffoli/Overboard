@@ -30,6 +30,28 @@ private:
 	USpringArmComponent* _springArm;
 
 	/**
+	 *Offset between spring arm orientation and board container orientation
+	 */
+	FRotator _springArmOrientationOffset;
+
+	/**
+	* speed of the spring arm rotation lerp per second
+	*/
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float _springArmRotationSpeed = 0.2f;
+
+	/**
+	* Spring arm orientation tolerance for pitch and roll
+	*/
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float _springArmOrientationTolerance = 0.001f;
+
+	/**
+	* Time since the spring arm start to re ajuste it's rotation
+	*/
+	float _springArmCurrentRotationTime;
+
+	/**
 	 * Main camera
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
@@ -152,6 +174,11 @@ private:
 	float _boardBrakingPitch = 35.f;
 
 	/**
+	* If the player is breaking or not
+	*/
+	bool _isBraking = false;
+
+	/**
 	 * Base target arm length when the character doesn't move
 	 */
 	float _baseTargetArmLength = 300.f;
@@ -248,6 +275,13 @@ private:
 	 * @param pOldZ Z local position of the board before the calculation
 	 */
 	double GetBoardZPositionForAcceleration(double pOldZ);
+
+	/**
+	 * Set the arm orientation in fonction of the board container orientation
+	 *
+	 * @param pDeltaTime deltatime between two ticks
+	 */
+	void SetArmOrientation(float pDeltaTime);
 
 protected:
 

@@ -14,16 +14,6 @@ class OVERBOARD_API UScreenLogger : public UEngine
 {
 	GENERATED_BODY()
 	
-private:
-
-	/**
-	 * Write a log on screen.
-	 *
-	 * @param pColor color of the log.
-	 * @param pText Text to log.
-	 */
-	static void WriteOnScreen(FColor pColor, FString pText);
-
 public :
 	/**
 	 * Write a success log on screen.
@@ -67,4 +57,12 @@ public :
 	 * @param pNumber int to log.
 	 */
 	static void WriteOnScreen(int pNumber);
+
+	/**
+	 * Write a log on screen.
+	 *
+	 * @param pColor color of the log.
+	 * @param pText Text to log.
+	 */
+	static void WriteOnScreen(FColor pColor, FString pText);
 };
