@@ -6,12 +6,12 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
-#include "MathHelper.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "MathHelper.h"
 #include "ScreenLogger.h"
 
 // Sets default values
@@ -48,6 +48,7 @@ void AOverboardPlayer::BeginPlay()
 	_currentSpeed = 0;
 	_previousTurningBoardRoll = 0;
 	_currentTurningBoardRollTime = 0;
+	_previousBoardRollForStopTurning = 0;
 	baseBoardRotation = _boardMesh->GetRelativeRotation();
 	_maxSpeed = GetCharacterMovement()->GetMaxSpeed();
 	_baseTargetArmLength = _springArm->TargetArmLength;
@@ -107,9 +108,7 @@ void AOverboardPlayer::Accelerate(double pValue)
 	_isBraking = false;
 	_currentSpeed = FMath::Min(_currentSpeed + _acceleration * pValue, _maxSpeed);
 
-	FRotator lNewRot = _boardMesh->GetRelativeRotation();
-	lNewRot.Pitch = baseBoardRotation.Pitch;
-	_boardMesh->SetRelativeRotation(lNewRot);
+	SetBoardPitch(baseBoardRotation.Pitch);
 
 	_currentSpeed = FMath::Max(_currentSpeed - _deceleration, 0);
 
@@ -138,10 +137,8 @@ void AOverboardPlayer::StopAccelerate(const FInputActionInstance& pInstance)
 void AOverboardPlayer::Deselerate() 
 {
 	_isBraking = false;
-	FRotator lNewRot = _boardMesh->GetRelativeRotation();
-	lNewRot.Pitch = baseBoardRotation.Pitch;
 
-	_boardMesh->SetRelativeRotation(lNewRot);
+	SetBoardPitch(baseBoardRotation.Pitch);
 
 	_currentSpeed = FMath::Max(_currentSpeed - _deceleration, 0);
 
@@ -156,14 +153,18 @@ void AOverboardPlayer::Brake(double pValue)
 
 	_currentSpeed = FMath::Max(_currentSpeed + _brakingStrength * pValue, 0);
 
-	FRotator lNewRot = _boardMesh->GetRelativeRotation();
-	lNewRot.Pitch = _boardBrakingPitch * FMath::Abs(pValue);
-
-	_boardMesh->SetRelativeRotation(lNewRot);
+	SetBoardPitch(_boardBrakingPitch * FMath::Abs(pValue));
 
 	LerpCameraArmForDeseleration();
 
 	ApplyNewSpeed();
+}
+
+void AOverboardPlayer::SetBoardPitch(float pPitch)
+{
+	FRotator lNewRot = _boardMesh->GetRelativeRotation();
+	lNewRot.Pitch = pPitch;
+	_boardMesh->SetRelativeRotation(lNewRot);
 }
 
 void AOverboardPlayer::LerpCameraArmForDeseleration()
@@ -214,33 +215,24 @@ void AOverboardPlayer::Turn(const FInputActionInstance& pInstance)
 void AOverboardPlayer::SetBoardTurningRoll(float pTurningSpeed)
 {
 	_currentStopTurningBoardRollTime = 0;
+	_previousBoardRollForStopTurning = 0;
+
 	//Cross product to calculate the new rot
 	float lNewroll = MathHelper::InvertedCrossProduct(pTurningSpeed * _currentSpeed, _turningSpeed * _maxSpeed,_maxTurningBoardRoll);
-	FRotator lNewRot = _boardMesh->GetRelativeRotation();
-	if (MathHelper::CheckSignDifference(lNewroll, _previousTurningBoardRoll)) 
-	{
-		_currentTurningBoardRollTime += Controller->GetWorld()->GetDeltaSeconds();
-
-		if (_currentTurningBoardRollTime >= _timeToSwipeTurningBoardRoll) 
-		{
-			_currentTurningBoardRollTime = 0;
-			lNewRot.Roll = lNewroll;
-			_previousTurningBoardRoll = lNewroll;
-		}
-		else
-		{
-			//Lerp
-			lNewRot.Roll = FMath::Lerp(_previousTurningBoardRoll, lNewroll, _currentTurningBoardRollTime / _timeToSwipeTurningBoardRoll);
-		}
-	}
-	else
+	_currentTurningBoardRollTime += GetWorld()->GetDeltaSeconds();
+	if (
+		SetBoardRoll(
+			lNewroll,
+			true,
+			_previousTurningBoardRoll,
+			_currentTurningBoardRollTime,
+			_timeToSwipeTurningBoardRoll
+		)
+	)
 	{
 		_currentTurningBoardRollTime = 0;
-		lNewRot.Roll = lNewroll;
 		_previousTurningBoardRoll = lNewroll;
 	}
-
-	_boardMesh->SetRelativeRotation(lNewRot);
 }
 
 void AOverboardPlayer::StopTurning(const FInputActionInstance& pInstance) 
@@ -251,30 +243,47 @@ void AOverboardPlayer::StopTurning(const FInputActionInstance& pInstance)
 void AOverboardPlayer::SetBoardStopTurningRoll()
 {
 	_currentTurningBoardRollTime = 0;
-	FRotator lNewRot = _boardMesh->GetRelativeRotation();
+	_previousTurningBoardRoll = 0;
 
-	if (_isBraking || FMath::IsNearlyEqual(lNewRot.Roll, baseBoardRotation.Roll, 0.001))
+	if (_previousBoardRollForStopTurning == 0) 
+	{
+		_previousBoardRollForStopTurning = _boardMesh->GetRelativeRotation().Roll;
+	}
+
+	_currentStopTurningBoardRollTime += GetWorld()->GetDeltaSeconds();
+
+	if (
+		SetBoardRoll(
+			baseBoardRotation.Roll, 
+			!_isBraking, 
+			_previousBoardRollForStopTurning,
+			_currentStopTurningBoardRollTime, 
+			_timeToSwipeTurningBoardRoll
+		)
+	)
 	{
 		_currentStopTurningBoardRollTime = 0;
-		lNewRot.Roll = baseBoardRotation.Roll;
+		_previousBoardRollForStopTurning = 0;
+	}
+}
+
+bool AOverboardPlayer::SetBoardRoll(float pRoll, bool pLerp, float pPreviousRoll, float pCurrentTime, float pMaxTime)
+{
+	FRotator lNewRot = _boardMesh->GetRelativeRotation();
+	bool lResult = true;
+
+	if (pLerp && pCurrentTime < pMaxTime && !FMath::IsNearlyEqual(lNewRot.Roll, pRoll, 0.001))
+	{
+		lNewRot.Roll = FMath::Lerp(pPreviousRoll, pRoll, pCurrentTime / pMaxTime);
+		lResult = false;
 	}
 	else
 	{
-		_currentStopTurningBoardRollTime += Controller->GetWorld()->GetDeltaSeconds();
-
-		if (_currentStopTurningBoardRollTime >= _timeToSwipeTurningBoardRoll)
-		{
-			_currentStopTurningBoardRollTime = 0;
-			lNewRot.Roll = baseBoardRotation.Roll;
-		}
-		else
-		{
-			//Lerp
-			lNewRot.Roll = FMath::Lerp(_previousTurningBoardRoll, baseBoardRotation.Roll, _currentStopTurningBoardRollTime / _timeToSwipeTurningBoardRoll);
-		}
+		lNewRot.Roll = pRoll;
 	}
-
 	_boardMesh->SetRelativeRotation(lNewRot);
+
+	return lResult;
 }
 
 void AOverboardPlayer::Tick(float pDeltaTime)

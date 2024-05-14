@@ -217,6 +217,11 @@ private:
 	float _previousTurningBoardRoll;
 
 	/**
+	* Board roll used to lerp the stop turning roll rotation
+	*/
+	float _previousBoardRollForStopTurning;
+
+	/**
 	* Current time used for Lerp the swipe of the turning board's roll
 	*/
 	float _currentTurningBoardRollTime;
@@ -239,6 +244,18 @@ public:
 	AOverboardPlayer();
 
 private:
+	/**
+	 * Create a subobject added to the character
+	 *
+	 * @param pParent component parent of the subobject
+	 * @param pName name of the suboject
+	 *
+	 * @tparam TSubObjectType type of the suboject to create
+	 *
+	 * @return suboject created
+	 */
+	template<class TSubObjectType>
+	TSubObjectType* CreateSubObjects(USceneComponent* pParent, FName pName);
 
 	/** 
 	 * Called to accelerate, deselerate or brake
@@ -318,6 +335,8 @@ private:
 	 * Calculate and give the board's Z local position to do the idle movement
 	 * 
 	 * @param pDeltaTime deltatime between two ticks
+	 * 
+	 * @return the new board's Z position
 	 */
 	double GetBoardZPositionForIdle(float pDeltaTime);
 
@@ -325,6 +344,8 @@ private:
 	 * Calculate and give the board's Z local position to do the acceleration movement
 	 *
 	 * @param pOldZ Z local position of the board before the calculation
+	 * 
+	 * @return the new board's Z position
 	 */
 	double GetBoardZPositionForAcceleration(double pOldZ);
 
@@ -335,14 +356,26 @@ private:
 	 */
 	void SetArmOrientation(float pDeltaTime);
 
-protected:
+	/**
+	* Set the board pitch
+	* 
+	* @param pPitch new pitch of the board to set
+	*/
+	void SetBoardPitch(float pPitch);
 
 	/**
-	 * Create a subobject added to the character
-	 */
-	template<class TSubObjectType>
-	TSubObjectType* CreateSubObjects(USceneComponent* pParent, FName pName);
-
+	* Set the board roll
+	*
+	* @param pPitch new roll of the board to set
+	* @param if we lerp the roll rotation or just set it
+	* @param previous roll value for lerp
+	* @param pCurrentTime used for lerp
+	* @param pMaxTime used for lerp
+	* 
+	* @return true if the final rotation is set, false otherwise
+	*/
+	bool SetBoardRoll(float pRoll, bool pLerp = false, float pPreviousRoll = 0, float pCurrentTime = 0.f, float pMaxTime = 0.f);
+protected:
 	/**
 	 * Called when the game starts or when spawned
 	 */
