@@ -186,7 +186,7 @@ private:
 	/**
 	 * base pitch board value for reset it where the player doesn't try to brake
 	 */
-	float baseBoardRotationPitch = 0.f;
+	FRotator baseBoardRotation;
 
 	/**
 	 * Current player speed
@@ -198,6 +198,39 @@ private:
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement Turning")
 	float _turningSpeed = 2.f;
+
+	/**
+	* Turning board roll when the value is as it max
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement Turning")
+	float _maxTurningBoardRoll = 50;
+
+	/**
+	* Time to swap turning roll when the player change the turning side
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement Turning")
+	float TimeToSwapTurningBoardRoll = 1.f;
+
+	/**
+	* Turning board roll on the previous iteration
+	*/
+	float _previousTurningBoardRoll;
+
+	/**
+	* Current time used for Lerp the swipe of the turning board's roll
+	*/
+	float _currentTurningBoardRollTime;
+
+	/**
+	* Current time used for Lerp the swipe of the stop turning board's roll
+	*/
+	float _currentStopTurningBoardRollTime;
+
+	/**
+	* Time to swipe turning board roll
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement Turning")
+	float _timeToSwipeTurningBoardRoll = 0.08f;
 
 public:
 	/**
@@ -261,6 +294,25 @@ private:
 	 * @param pInstance input instance used
 	 */
 	void Turn(const FInputActionInstance& pInstance);
+
+	/**
+	* Called for set the new board's roll when the character turn
+	* 
+	* @param pTurningSpeed the turning speed
+	*/
+	void SetBoardTurningRoll(float pTurningSpeed);
+
+	/**
+	 * Called when the player release the turning button
+	 *
+	 * @param pInstance input instance used
+	 */
+	void StopTurning(const FInputActionInstance& pInstance);
+
+	/**
+	* Called for set the base board's roll when the character stop turning
+	*/
+	void SetBoardStopTurningRoll();
 
 	/**
 	 * Calculate and give the board's Z local position to do the idle movement
