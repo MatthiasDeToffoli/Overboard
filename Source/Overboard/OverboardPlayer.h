@@ -97,6 +97,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* _turnInputAction;
 
+	/**
+	 * Input action to jump
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* JumpInputAction;
 
 	// Idle -----------------------------------------------------------------------------------------------------
 

@@ -76,6 +76,10 @@ void AOverboardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		if (lInput) 
 		{
+			// Jumping
+			lInput->BindAction(JumpInputAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+			lInput->BindAction(JumpInputAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
 			lInput->BindAction(_accelerateInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::ManageAcceleration);
 			lInput->BindAction(_accelerateInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopAccelerate);
 			lInput->BindAction(_turnInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::Turn);
