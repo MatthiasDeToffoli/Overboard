@@ -91,19 +91,22 @@ void AOverboardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AOverboardPlayer::ManageAcceleration(const FInputActionInstance& pInstance)
 {
-	float lValue = pInstance.GetValue().Get<float>();
+	if (GetCharacterMovement()->IsMovingOnGround())
+	{
+		float lValue = pInstance.GetValue().Get<float>();
 
-	if (lValue > 0) 
-	{
-		Accelerate(lValue);
-	}
-	else  if (lValue < 0)
-	{
-		Brake(lValue);
-	}
-	else
-	{
-		Deselerate();
+		if (lValue > 0)
+		{
+			Accelerate(lValue);
+		}
+		else  if (lValue < 0)
+		{
+			Brake(lValue);
+		}
+		else
+		{
+			Deselerate();
+		}
 	}
 }
 
@@ -135,7 +138,10 @@ void AOverboardPlayer::LerpCameraArmForAcceleration()
 
 void AOverboardPlayer::StopAccelerate(const FInputActionInstance& pInstance)
 {
-	Deselerate();
+	if (GetCharacterMovement()->IsMovingOnGround()) 
+	{
+		Deselerate();
+	}
 }
 
 void AOverboardPlayer::Deselerate() 
@@ -153,15 +159,15 @@ void AOverboardPlayer::Deselerate()
 
 void AOverboardPlayer::Brake(double pValue) 
 {
-	_isBraking = true;
+		_isBraking = true;
 
-	_currentSpeed = FMath::Max(_currentSpeed + _brakingStrength * pValue, 0);
+		_currentSpeed = FMath::Max(_currentSpeed + _brakingStrength * pValue, 0);
 
-	SetBoardPitch(_boardBrakingPitch * FMath::Abs(pValue));
+		SetBoardPitch(_boardBrakingPitch * FMath::Abs(pValue));
 
-	LerpCameraArmForDeseleration();
+		LerpCameraArmForDeseleration();
 
-	ApplyNewSpeed();
+		ApplyNewSpeed();
 }
 
 void AOverboardPlayer::SetBoardPitch(float pPitch)
@@ -197,23 +203,27 @@ void AOverboardPlayer::ApplyNewSpeed()
 
 void AOverboardPlayer::Turn(const FInputActionInstance& pInstance) 
 {
-	float lValue = pInstance.GetValue().Get<float>() * _turningSpeed;
-
-	if (Controller != nullptr) 
+	if (GetCharacterMovement()->IsMovingOnGround()) 
 	{
-		FRotator lRotation = Controller->GetControlRotation();
-		lRotation.Yaw += lValue ;
-		Controller->SetControlRotation(lRotation);
+		float lValue = pInstance.GetValue().Get<float>() * _turningSpeed;
 
-		if (_isBraking)
+		if (Controller != nullptr)
 		{
-			SetBoardStopTurningRoll();
-		}
-		else 
-		{
-			SetBoardTurningRoll(lValue);
+			FRotator lRotation = Controller->GetControlRotation();
+			lRotation.Yaw += lValue;
+			Controller->SetControlRotation(lRotation);
+
+			if (_isBraking)
+			{
+				SetBoardStopTurningRoll();
+			}
+			else
+			{
+				SetBoardTurningRoll(lValue);
+			}
 		}
 	}
+	
 }
 
 void AOverboardPlayer::SetBoardTurningRoll(float pTurningSpeed)
@@ -241,7 +251,10 @@ void AOverboardPlayer::SetBoardTurningRoll(float pTurningSpeed)
 
 void AOverboardPlayer::StopTurning(const FInputActionInstance& pInstance) 
 {
-	SetBoardStopTurningRoll();
+	if (GetCharacterMovement()->IsMovingOnGround())
+	{
+		SetBoardStopTurningRoll();
+	}
 }
 
 void AOverboardPlayer::SetBoardStopTurningRoll()
@@ -294,18 +307,21 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 {
 	Super::Tick(pDeltaTime);
 
-	FVector lBasePosVector = _boardDefaultPosition->GetRelativeLocation();
-	if (_currentSpeed == 0 && !_isBraking)
+	if (GetCharacterMovement()->IsMovingOnGround()) 
 	{
-		lBasePosVector.Z += GetBoardZPositionForIdle(pDeltaTime);
-	}
-	else 
-	{
-		lBasePosVector.Z = GetBoardZPositionForAcceleration(lBasePosVector.Z);
-	}
+		FVector lBasePosVector = _boardDefaultPosition->GetRelativeLocation();
+		if (_currentSpeed == 0 && !_isBraking)
+		{
+			lBasePosVector.Z += GetBoardZPositionForIdle(pDeltaTime);
+		}
+		else
+		{
+			lBasePosVector.Z = GetBoardZPositionForAcceleration(lBasePosVector.Z);
+		}
 
-	_boardMesh->SetRelativeLocation(lBasePosVector);
-	SetArmOrientation(pDeltaTime);
+		_boardMesh->SetRelativeLocation(lBasePosVector);
+		SetArmOrientation(pDeltaTime);
+	}
 }
 
 double AOverboardPlayer::GetBoardZPositionForIdle(float pDeltaTime)
