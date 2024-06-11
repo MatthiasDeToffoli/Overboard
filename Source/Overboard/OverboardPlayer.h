@@ -65,6 +65,12 @@ private:
 	USceneComponent* _boardContainer;
 
 	/**
+	 * Used to know if the board is on the ground or not and avoid some error
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Board", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* _boardGroundDetector;
+
+	/**
 	 * Mesh of the board we can move with some actions 
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Board", meta = (AllowPrivateAccess = "true"))

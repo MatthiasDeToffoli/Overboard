@@ -25,6 +25,7 @@ AOverboardPlayer::AOverboardPlayer()
 	_boardMesh = CreateSubObjects<UStaticMeshComponent>(_boardContainer, "Board mesh");
 	_springArm = CreateSubObjects<USpringArmComponent>(RootComponent, "Spring arm");
 	_mainCamera = CreateSubObjects<UCameraComponent>(_springArm, "Main camera");
+	_boardGroundDetector = CreateSubObjects<USceneComponent>(RootComponent, "Board's ground detector");
 }
 
 template<class TSubObjectType>
