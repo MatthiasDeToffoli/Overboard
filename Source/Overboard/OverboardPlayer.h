@@ -52,6 +52,35 @@ private:
 	float _springArmCurrentRotationTime;
 
 	/**
+	* Spring arm length when the character is not on ground
+	*/
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float SpringArmAirLength = 400;
+
+	/**
+	 *Offset between spring arm orientation when the character is not on ground
+	 */
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	FRotator _springArmAirOrientationOffset;
+
+	/**
+	* speed of the spring arm rotation lerp per secondwhen the character is not on ground
+	*/
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float _springArmAirRotationSpeed = 0.2f;
+
+	/**
+	* Spring arm orientation tolerance for pitch and roll when the character is not on ground
+	*/
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float _springArmAirOrientationTolerance = 0.001f;
+
+	/**
+	* Time since the spring arm start to re ajuste it's rotation when the character is not on ground
+	*/
+	float _springArmAirCurrentRotationTime;
+
+	/**
 	 * Main camera
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
@@ -361,11 +390,31 @@ private:
 	double GetBoardZPositionForAcceleration(double pOldZ);
 
 	/**
-	 * Set the arm orientation in fonction of the board container orientation
+	 * Set the arm orientation in fonction of the board container orientation when the character is on the ground
 	 *
 	 * @param pDeltaTime deltatime between two ticks
 	 */
-	void SetArmOrientation(float pDeltaTime);
+	void SetGroundedArmOrientation(float pDeltaTime);
+
+	/**
+	 * Set the arm orientation in fonction of the board container orientation when the character doesn't touch the ground
+	 *
+	 * @param pDeltaTime deltatime between two ticks
+	 */
+	void SetAirArmOrientation(float pDeltaTime);
+
+	/**
+	 * Set the arm orientation in fonction of the board container orientation
+	 *
+	 * @param pWantedRotation the final orientation wanted
+	 * @param pTotalTime time calculated since the start of the movement
+	 * @param pDeltaTime deltatime between two ticks
+	 * @param pTolerance error telerance
+	 * @param pSpeed Lerp speed
+	 * 
+	 * @return the totaltime updated
+	 */
+	float SetArmOrientation(FRotator pWantedRotation, float pTotalTime, float pDeltaTime, float pTolerance, float pSpeed);
 
 	/**
 	* Set the board pitch

@@ -50,6 +50,7 @@ void AOverboardPlayer::BeginPlay()
 	_previousTurningBoardRoll = 0;
 	_currentTurningBoardRollTime = 0;
 	_previousBoardRollForStopTurning = 0;
+	_springArmAirCurrentRotationTime = 0;
 	baseBoardRotation = _boardMesh->GetRelativeRotation();
 	_maxSpeed = GetCharacterMovement()->GetMaxSpeed();
 	_baseTargetArmLength = _springArm->TargetArmLength;
@@ -310,6 +311,7 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 
 	if (GetCharacterMovement()->IsMovingOnGround()) 
 	{
+		_springArmAirCurrentRotationTime = 0;
 		FVector lBasePosVector = _boardDefaultPosition->GetRelativeLocation();
 		if (_currentSpeed == 0 && !_isBraking)
 		{
@@ -321,7 +323,11 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 		}
 
 		_boardMesh->SetRelativeLocation(lBasePosVector);
-		SetArmOrientation(pDeltaTime);
+		SetGroundedArmOrientation(pDeltaTime);
+	}
+	else 
+	{
+		SetAirArmOrientation(pDeltaTime);
 	}
 }
 
@@ -343,7 +349,33 @@ double AOverboardPlayer::GetBoardZPositionForAcceleration(double pOldZ)
 	return FMath::Lerp(pOldZ, pOldZ - _boardZOffsetAccelerate, lAccelerationRatio);
 }
 
-void AOverboardPlayer::SetArmOrientation(float pDeltaTime)
+void AOverboardPlayer::SetGroundedArmOrientation(float pDeltaTime)
+{
+	_springArmCurrentRotationTime = SetArmOrientation
+	(
+		_springArmOrientationOffset, 
+		_springArmCurrentRotationTime, 
+		pDeltaTime, 
+		_springArmOrientationTolerance, 
+		_springArmRotationSpeed
+	);
+}
+
+void AOverboardPlayer::SetAirArmOrientation(float pDeltaTime)
+{
+	_springArmAirCurrentRotationTime = SetArmOrientation
+	(
+		_springArmAirOrientationOffset,
+		_springArmAirCurrentRotationTime,
+		pDeltaTime,
+		_springArmAirOrientationTolerance,
+		_springArmAirRotationSpeed
+	);
+
+	_springArm->TargetArmLength = FMath::Lerp(_springArm->TargetArmLength, SpringArmAirLength, _springArmAirCurrentRotationTime);
+}
+
+float AOverboardPlayer::SetArmOrientation(FRotator pWantedRotation, float pTotalTime, float pDeltaTime, float pTolerance, float pSpeed)
 {
 	FRotator lSpringArmRot = _springArm->GetRelativeRotation();
 	FRotator lBoardContainerRot = _boardContainer->GetRelativeRotation();
@@ -351,25 +383,27 @@ void AOverboardPlayer::SetArmOrientation(float pDeltaTime)
 	FRotator lNewRot;
 	double lLerpOffset;
 
-	if (FMath::Abs(lSpringArmRot.Pitch - lBoardContainerRot.Pitch - _springArmOrientationOffset.Pitch) >= _springArmOrientationTolerance 
-		|| FMath::Abs(lSpringArmRot.Roll - lBoardContainerRot.Roll - _springArmOrientationOffset.Roll) >= _springArmOrientationTolerance)
+	if (FMath::Abs(lSpringArmRot.Pitch - lBoardContainerRot.Pitch - pWantedRotation.Pitch) >= pTolerance
+		|| FMath::Abs(lSpringArmRot.Roll - lBoardContainerRot.Roll - pWantedRotation.Roll) >= pTolerance)
 	{
-		_springArmCurrentRotationTime += pDeltaTime;
-		lLerpOffset = _springArmRotationSpeed * _springArmCurrentRotationTime;
+		pTotalTime += pDeltaTime;
+		lLerpOffset = pSpeed * pTotalTime;
 
-		if (lLerpOffset >= 1) 
+		if (lLerpOffset >= 1)
 		{
 			lLerpOffset = 1;
-			_springArmCurrentRotationTime = 0.f;
+			pTotalTime = 0.f;
 		}
 
-		lNewRot = FMath::Lerp(lSpringArmRot, _springArmOrientationOffset + lBoardContainerRot, lLerpOffset);
+		lNewRot = FMath::Lerp(lSpringArmRot, pWantedRotation + lBoardContainerRot, lLerpOffset);
 		lNewRot.Yaw = lSpringArmRot.Yaw;
 		_springArm->SetRelativeRotation(lNewRot);
 	}
-	else 
+	else
 	{
-		_springArmCurrentRotationTime = 0.f;
+		pTotalTime = 0.f;
 	}
+
+	return pTotalTime;
 }
 
