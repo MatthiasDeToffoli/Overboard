@@ -82,37 +82,51 @@ void AOverboardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			lInput->BindAction(JumpInputAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 			lInput->BindAction(JumpInputAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
-			lInput->BindAction(_accelerateInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::ManageAcceleration);
+			lInput->BindAction(_accelerateInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::VerticalMovement);
 			lInput->BindAction(_accelerateInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopAccelerate);
-			lInput->BindAction(_turnInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::Turn);
+			lInput->BindAction(_turnInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::HorizontalMovement);
 			lInput->BindAction(_turnInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopTurning);
 		}
 	}
 	
 }
 
-void AOverboardPlayer::ManageAcceleration(const FInputActionInstance& pInstance)
+void AOverboardPlayer::VerticalMovement(const FInputActionInstance& pInstance)
 {
+	float lValue = pInstance.GetValue().Get<float>();
+
 	if (GetCharacterMovement()->IsMovingOnGround())
 	{
-		float lValue = pInstance.GetValue().Get<float>();
-
-		if (lValue > 0)
-		{
-			Accelerate(lValue);
-		}
-		else  if (lValue < 0)
-		{
-			Brake(lValue);
-		}
-		else
-		{
-			Deselerate();
-		}
+		ManageAcceleration(lValue);
+	}
+	else 
+	{
+		VerticalAirMovement(lValue);
 	}
 }
 
-void AOverboardPlayer::Accelerate(double pValue)
+void AOverboardPlayer::VerticalAirMovement(float pValue)
+{
+	_boardContainer->AddLocalRotation(*(new FRotator(pValue * _verticalAirSpeed * -1, 0, 0)));
+}
+
+void AOverboardPlayer::ManageAcceleration(float pValue)
+{
+	if (pValue > 0)
+	{
+		Accelerate(pValue);
+	}
+	else  if (pValue < 0)
+	{
+		Brake(pValue);
+	}
+	else
+	{
+		Deselerate();
+	}
+}
+
+void AOverboardPlayer::Accelerate(float pValue)
 {
 	_isBraking = false;
 	_currentSpeed = FMath::Min(_currentSpeed + _acceleration * pValue, _maxSpeed);
@@ -159,7 +173,7 @@ void AOverboardPlayer::Deselerate()
 	ApplyNewSpeed();
 }
 
-void AOverboardPlayer::Brake(double pValue) 
+void AOverboardPlayer::Brake(float pValue)
 {
 		_isBraking = true;
 
@@ -203,29 +217,46 @@ void AOverboardPlayer::ApplyNewSpeed()
 	AddMovementInput(ForwardDirection, _currentSpeed, true);
 }
 
-void AOverboardPlayer::Turn(const FInputActionInstance& pInstance) 
+void AOverboardPlayer::HorizontalMovement(const FInputActionInstance& pInstance) 
 {
+	float lValue = pInstance.GetValue().Get<float>();
+
 	if (GetCharacterMovement()->IsMovingOnGround()) 
 	{
-		float lValue = pInstance.GetValue().Get<float>() * _turningSpeed;
+		Turn(lValue);
+	}
+	else 
+	{
+		HorizontalAirMovement(lValue);
+	}
+}
 
-		if (Controller != nullptr)
+void AOverboardPlayer::HorizontalAirMovement(float pValue)
+{
+	FRotator lBoardContainerRot = _boardContainer->GetRelativeRotation();
+	lBoardContainerRot.Yaw += pValue * _horizontalAirSpeed;
+	_boardContainer->SetRelativeRotation(lBoardContainerRot);
+}
+
+void AOverboardPlayer::Turn(float pValue)
+{
+	if (Controller != nullptr)
+	{
+		float lValToAdd = pValue * _turningSpeed;
+
+		FRotator lRotation = Controller->GetControlRotation();
+		lRotation.Yaw += lValToAdd;
+		Controller->SetControlRotation(lRotation);
+
+		if (_isBraking)
 		{
-			FRotator lRotation = Controller->GetControlRotation();
-			lRotation.Yaw += lValue;
-			Controller->SetControlRotation(lRotation);
-
-			if (_isBraking)
-			{
-				SetBoardStopTurningRoll();
-			}
-			else
-			{
-				SetBoardTurningRoll(lValue);
-			}
+			SetBoardStopTurningRoll();
+		}
+		else
+		{
+			SetBoardTurningRoll(lValToAdd);
 		}
 	}
-	
 }
 
 void AOverboardPlayer::SetBoardTurningRoll(float pTurningSpeed)
@@ -383,8 +414,8 @@ float AOverboardPlayer::SetArmOrientation(FRotator pWantedRotation, float pTotal
 	FRotator lNewRot;
 	double lLerpOffset;
 
-	if (FMath::Abs(lSpringArmRot.Pitch - lBoardContainerRot.Pitch - pWantedRotation.Pitch) >= pTolerance
-		|| FMath::Abs(lSpringArmRot.Roll - lBoardContainerRot.Roll - pWantedRotation.Roll) >= pTolerance)
+	if (FMath::Abs(lSpringArmRot.Pitch- pWantedRotation.Pitch) >= pTolerance
+		|| FMath::Abs(lSpringArmRot.Roll - pWantedRotation.Roll) >= pTolerance)
 	{
 		pTotalTime += pDeltaTime;
 		lLerpOffset = pSpeed * pTotalTime;
@@ -395,7 +426,7 @@ float AOverboardPlayer::SetArmOrientation(FRotator pWantedRotation, float pTotal
 			pTotalTime = 0.f;
 		}
 
-		lNewRot = FMath::Lerp(lSpringArmRot, pWantedRotation + lBoardContainerRot, lLerpOffset);
+		lNewRot = FMath::Lerp(lSpringArmRot, pWantedRotation, lLerpOffset);
 		lNewRot.Yaw = lSpringArmRot.Yaw;
 		_springArm->SetRelativeRotation(lNewRot);
 	}

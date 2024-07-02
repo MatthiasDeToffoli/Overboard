@@ -236,19 +236,19 @@ private:
 	/**
 	 * turning speed
 	 */
-	UPROPERTY(EditAnywhere, Category = "Movement Turning")
+	UPROPERTY(EditAnywhere, Category = "Movement/Turning")
 	float _turningSpeed = 2.f;
 
 	/**
 	* Turning board roll when the value is as it max
 	*/
-	UPROPERTY(EditAnywhere, Category = "Movement Turning")
+	UPROPERTY(EditAnywhere, Category = "Movement/Turning")
 	float _maxTurningBoardRoll = 50;
 
 	/**
 	* Time to swap turning roll when the player change the turning side
 	*/
-	UPROPERTY(EditAnywhere, Category = "Movement Turning")
+	UPROPERTY(EditAnywhere, Category = "MovementTurning")
 	float TimeToSwapTurningBoardRoll = 1.f;
 
 	/**
@@ -274,8 +274,22 @@ private:
 	/**
 	* Time to swipe turning board roll
 	*/
-	UPROPERTY(EditAnywhere, Category = "Movement Turning")
+	UPROPERTY(EditAnywhere, Category = "Movement/Turning")
 	float _timeToSwipeTurningBoardRoll = 0.08f;
+
+	//Air Movement ---------------------------------------------------------------------------------------------------
+
+	/*
+	* Speed of vertical air movement
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement/Air")
+	float _verticalAirSpeed = 0.5f;
+
+	/*
+	* Speed of horizontal air movement
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement/Air")
+	float _horizontalAirSpeed = 2.f;
 
 public:
 	/**
@@ -298,18 +312,32 @@ private:
 	TSubObjectType* CreateSubObjects(USceneComponent* pParent, FName pName);
 
 	/** 
-	 * Called to accelerate, deselerate or brake
+	 * Manage vertical movement
 	 *
 	 * @param pInstance input instance used
 	 */
-	void ManageAcceleration(const FInputActionInstance& pInstance);
+	void VerticalMovement(const FInputActionInstance& pInstance);
+
+	/**
+	 * Called to accelerate, deselerate or brake
+	 *
+	 * @param pValue Value got by the player input axis
+	 */
+	void ManageAcceleration(float pValue);
+
+	/**
+	 * Move the orientation of the character vertically when he is not on the ground
+	 *
+	 * @param pValue Value got by the player input axis
+	 */
+	void VerticalAirMovement(float pValue);
 
 	/**
 	 * Calculate and apply the acceleration
 	 * 
 	 * @param pValue Value got by the player input axis
 	 */
-	void Accelerate(double pValue);
+	void Accelerate(float pValue);
 
 	/**
 	 * Move the camera back to see the acceleration effect
@@ -333,7 +361,7 @@ private:
 	 * 
 	 * @param pInstance input instance used
 	 */
-	void Brake(double pValue);
+	void Brake(float pValue);
 
 	/**
 	 * Move the camera to it base position to see the deseleration effect
@@ -346,11 +374,25 @@ private:
 	void ApplyNewSpeed();
 
 	/**
-	 * Called when the player try to turn
+	 * Manage horizontal movement
 	 *
 	 * @param pInstance input instance used
 	 */
-	void Turn(const FInputActionInstance& pInstance);
+	void HorizontalMovement(const FInputActionInstance& pInstance);
+
+	/**
+	 * Manage vertical movement
+	 *
+	 * @param pInstance input instance used
+	 */
+	void Turn(float pValue);
+
+	/**
+	 * Move the orientation of the character horizontally when he is not on the ground
+	 *
+	 * @param pValue Value got by the player input axis
+	 */
+	void HorizontalAirMovement(float pValue);
 
 	/**
 	* Called for set the new board's roll when the character turn
