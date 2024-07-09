@@ -55,6 +55,7 @@ void AOverboardPlayer::BeginPlay()
 	_maxSpeed = GetCharacterMovement()->GetMaxSpeed();
 	_baseTargetArmLength = _springArm->TargetArmLength;
 	_springArmOrientationOffset = _springArm->GetRelativeRotation() - _boardContainer->GetRelativeRotation();
+	_IsFlying = !GetCharacterMovement()->IsMovingOnGround();
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -342,6 +343,26 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 
 	if (GetCharacterMovement()->IsMovingOnGround()) 
 	{
+		if (_IsFlying)
+		{
+			//Landing();
+			
+		}
+
+		FRotator lRot = _boardContainer->GetRelativeRotation();
+
+		if (FMath::Abs(lRot.Yaw) >= 1)
+		{
+			_CurrentTimeToResetPitchWhenLanding += pDeltaTime;
+			
+			lRot.Yaw = FMath::Lerp(lRot.Yaw, 0,  _CurrentTimeToResetPitchWhenLanding / _TimeToResetPitchWhenLanding);
+			_boardContainer->SetRelativeRotation(lRot);
+		}
+		else if(lRot.Yaw != 0)
+		{
+			lRot.Yaw = 0;
+		}
+
 		_springArmAirCurrentRotationTime = 0;
 		FVector lBasePosVector = _boardDefaultPosition->GetRelativeLocation();
 		if (_currentSpeed == 0 && !_isBraking)
@@ -358,8 +379,34 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 	}
 	else 
 	{
+		_IsFlying = true;
 		SetAirArmOrientation(pDeltaTime);
 	}
+}
+
+void AOverboardPlayer::Landing() 
+{
+	
+	if (FMath::Abs(_boardContainer->GetRelativeRotation().Pitch) < _landingYawTollerance)
+	{
+		if (_boardContainer->GetRelativeRotation().Pitch < 0)
+		{
+			UScreenLogger::WriteOnScreen((float)_boardContainer->GetRelativeRotation().Pitch + 180);
+		}
+		else 
+		{
+			UScreenLogger::WriteOnScreen((float)_boardContainer->GetRelativeRotation().Pitch);
+		}
+		
+		UScreenLogger::WriteInfo("Win XP");
+	}
+	else
+	{
+		UScreenLogger::WriteInfo("Lose XP");
+		_boardContainer->SetRelativeRotation(FRotator::ZeroRotator);
+	}
+
+	_IsFlying = false;
 }
 
 double AOverboardPlayer::GetBoardZPositionForIdle(float pDeltaTime)
@@ -438,3 +485,11 @@ float AOverboardPlayer::SetArmOrientation(FRotator pWantedRotation, float pTotal
 	return pTotalTime;
 }
 
+
+void AOverboardPlayer::Landed(const FHitResult& Hit)
+{
+	//TODO here not working
+	Landing();
+	_CurrentTimeToResetPitchWhenLanding = 0;
+	_boardGroundDetector->SetActiveFlag(true);
+}

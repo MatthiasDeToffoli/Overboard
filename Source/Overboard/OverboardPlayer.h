@@ -291,6 +291,28 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement/Air")
 	float _horizontalAirSpeed = 2.f;
 
+	/*
+	* Speed of horizontal air movement
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement/Air")
+	float _landingYawTollerance = 85;
+
+	/*
+	* Time to reset board container yaw when landing
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement/Air")
+	float _TimeToResetPitchWhenLanding = 1.f;
+
+	/*
+	* Current time used to reset board container yaw when landing
+	*/
+	float _CurrentTimeToResetPitchWhenLanding;
+
+	/*
+	* if the character is flying or not
+	*/
+	bool _IsFlying;
+
 public:
 	/**
 	 * Default constructor
@@ -477,6 +499,12 @@ private:
 	* @return true if the final rotation is set, false otherwise
 	*/
 	bool SetBoardRoll(float pRoll, bool pLerp = false, float pPreviousRoll = 0, float pCurrentTime = 0.f, float pMaxTime = 0.f);
+
+	/**
+	* When the player land on the ground
+	*/
+	void Landing();
+
 protected:
 	/**
 	 * Called when the game starts or when spawned
@@ -499,7 +527,5 @@ public:
 	 */
 	virtual void Tick(float pDeltaTime) override;
 
-
-
-	
+	virtual void Landed(const FHitResult& Hit) override;
 };
