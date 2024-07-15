@@ -47,3 +47,16 @@ bool MathHelper::CheckSignDifference(double pA, double pB)
 {
 	return pA * pB < 0;
 }
+
+double MathHelper::AngleBetweenVectors(FVector pA, FVector pB, const bool pAsRadiant)
+{
+	double lDotProduct = FVector::DotProduct(pA.GetSafeNormal(), pB.GetSafeNormal());
+	double lAngle = FMath::Acos(lDotProduct);
+
+	if (pAsRadiant)
+	{
+		return lAngle;
+	}
+
+	return FMath::RadiansToDegrees(lAngle);
+}

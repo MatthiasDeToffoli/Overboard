@@ -343,12 +343,6 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 
 	if (GetCharacterMovement()->IsMovingOnGround()) 
 	{
-		if (_IsFlying)
-		{
-			//Landing();
-			
-		}
-
 		FRotator lRot = _boardContainer->GetRelativeRotation();
 
 		if (FMath::Abs(lRot.Yaw) >= 1)
@@ -384,20 +378,14 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 	}
 }
 
-void AOverboardPlayer::Landing() 
+void AOverboardPlayer::Landing(const FHitResult& pHit)
 {
-	
-	if (FMath::Abs(_boardContainer->GetRelativeRotation().Pitch) < _landingYawTollerance)
+	double lAngle = MathHelper::AngleBetweenVectors(pHit.GetActor()->GetActorUpVector(),_boardContainer->GetUpVector());
+
+	UScreenLogger::WriteOnScreen((float)lAngle);
+
+	if (lAngle < _landingYawTollerance)
 	{
-		if (_boardContainer->GetRelativeRotation().Pitch < 0)
-		{
-			UScreenLogger::WriteOnScreen((float)_boardContainer->GetRelativeRotation().Pitch + 180);
-		}
-		else 
-		{
-			UScreenLogger::WriteOnScreen((float)_boardContainer->GetRelativeRotation().Pitch);
-		}
-		
 		UScreenLogger::WriteInfo("Win XP");
 	}
 	else
@@ -488,8 +476,7 @@ float AOverboardPlayer::SetArmOrientation(FRotator pWantedRotation, float pTotal
 
 void AOverboardPlayer::Landed(const FHitResult& Hit)
 {
-	//TODO here not working
-	Landing();
+	Landing(Hit);
 	_CurrentTimeToResetPitchWhenLanding = 0;
 	_boardGroundDetector->SetActiveFlag(true);
 }

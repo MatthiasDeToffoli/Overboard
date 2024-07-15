@@ -502,8 +502,9 @@ private:
 
 	/**
 	* When the player land on the ground
+	* @param the actor hit to land
 	*/
-	void Landing();
+	void Landing(const FHitResult& pHit);
 
 protected:
 	/**

@@ -105,4 +105,15 @@ public:
 	* @return true if the sign is different, false otherwise
 	*/
 	static bool CheckSignDifference(double pA, double pB);
+
+	/**
+	* Get the angle between two vectors
+	* 
+	* @param pA First vector
+	* @param pB second vector
+	* @param pAsRadiant if we return the value as radiant or degrees
+	* 
+	* @return the angle between the two vectors
+	*/
+	static double AngleBetweenVectors(FVector pA, FVector pB, const bool pAsRadiant = false);
 };
