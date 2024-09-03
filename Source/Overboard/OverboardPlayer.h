@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+	// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -86,6 +86,49 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	UCameraComponent* _mainCamera;
 
+	/// <summary>
+	/// Maximum value in degrees of camera orientation control.
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float _maxHorizontalCameraControl = 30;
+
+	/// <summary>
+	/// Current value in degrees of camera orientation control.
+	/// </summary>
+	float _currentHorizontalCameraControlMoveValue = 0;
+
+	/// <summary>
+	/// Maximum value in degrees of camera orientation control.
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float _maxVerticalCameraControl = 30;
+
+	/// <summary>
+	/// Current value in degrees of camera orientation control.
+	/// </summary>
+	float _currentVerticalCameraControlMoveValue = 0;
+
+	/// <summary>
+	/// Maximum value in degrees of camera orientation control.
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float _cameraOrientationSpeed = 5;
+
+	/// <summary>
+	/// Base camera relative orientation
+	/// </summary>
+	FRotator _baseCameraOrientation;
+
+	/// <summary>
+	/// If the player is moving the camera horizontaly
+	/// </summary>
+	bool _isMovingCameraHorizonatly = false;
+
+	/// <summary>
+	/// If the player is moving the camera verticaly
+	/// </summary>
+	bool _isMovingCameraVerticaly = false;
+
 	// Board ----------------------------------------------------------------------------------------------------
 	/**
 	 * Default position of the board, used for doing some calculation on the board movement
@@ -131,6 +174,18 @@ private:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* _turnInputAction;
+
+	/**
+	 * Input action to accelerate
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* _horizontalCameraControlInputAction;
+
+	/**
+	 * Input action to turn
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* _verticalCameraControlInputAction;
 
 	/**
 	 * Input action to jump
@@ -333,6 +388,20 @@ private:
 	template<class TSubObjectType>
 	TSubObjectType* CreateSubObjects(USceneComponent* pParent, FName pName);
 
+	/**
+	 * Manage vertical camera movement
+	 *
+	 * @param pInstance input instance used
+	 */
+	void VerticalCameraMovement(const FInputActionInstance& pInstance);
+
+	/**
+	 * Stop to manage vertical camera movement
+	 *
+	 * @param pInstance input instance used
+	 */
+	void StopVerticalCameraMovement(const FInputActionInstance& pInstance);
+
 	/** 
 	 * Manage vertical movement
 	 *
@@ -394,6 +463,20 @@ private:
 	 * Apply the new speed calculate with acceleration
 	 */
 	void ApplyNewSpeed();
+
+	/**
+	 * Manage horizontal camera movement
+	 *
+	 * @param pInstance input instance used
+	 */
+	void HorizontalCameraMovement(const FInputActionInstance& pInstance);
+
+	/**
+	 * Stop to manage horizontal camera movement
+	 *
+	 * @param pInstance input instance used
+	 */
+	void StopHorizontalCameraMovement(const FInputActionInstance& pInstance);
 
 	/**
 	 * Manage horizontal movement

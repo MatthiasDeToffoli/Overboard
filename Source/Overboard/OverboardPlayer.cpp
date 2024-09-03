@@ -56,6 +56,8 @@ void AOverboardPlayer::BeginPlay()
 	_baseTargetArmLength = _springArm->TargetArmLength;
 	_springArmOrientationOffset = _springArm->GetRelativeRotation() - _boardContainer->GetRelativeRotation();
 	_IsFlying = !GetCharacterMovement()->IsMovingOnGround();
+	_currentVerticalCameraControlMoveValue = 0;
+	_currentHorizontalCameraControlMoveValue = 0;
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -83,13 +85,41 @@ void AOverboardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			lInput->BindAction(JumpInputAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 			lInput->BindAction(JumpInputAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
+			// Character movement
 			lInput->BindAction(_accelerateInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::VerticalMovement);
 			lInput->BindAction(_accelerateInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopAccelerate);
 			lInput->BindAction(_turnInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::HorizontalMovement);
 			lInput->BindAction(_turnInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopTurning);
+
+			// Camera
+			lInput->BindAction(_verticalCameraControlInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::VerticalCameraMovement);
+			lInput->BindAction(_verticalCameraControlInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopVerticalCameraMovement);
+			lInput->BindAction(_horizontalCameraControlInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::HorizontalCameraMovement);
+			lInput->BindAction(_horizontalCameraControlInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopHorizontalCameraMovement);
 		}
 	}
 	
+}
+
+void AOverboardPlayer::VerticalCameraMovement(const FInputActionInstance& pInstance) 
+{
+	if (GetCharacterMovement()->IsMovingOnGround()) 
+	{
+		float lValue = pInstance.GetValue().Get<float>();
+
+		_isMovingCameraVerticaly = true;
+
+		_springArm->GetRelativeRotation().Add(lValue * _cameraOrientationSpeed,0,0);
+	}
+	else 
+	{
+		_isMovingCameraVerticaly = false;
+	}
+}
+
+void AOverboardPlayer::StopVerticalCameraMovement(const FInputActionInstance& pInstance)
+{
+	_isMovingCameraVerticaly = false;
 }
 
 void AOverboardPlayer::VerticalMovement(const FInputActionInstance& pInstance)
@@ -216,6 +246,40 @@ void AOverboardPlayer::ApplyNewSpeed()
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
 	AddMovementInput(ForwardDirection, _currentSpeed, true);
+}
+
+void AOverboardPlayer::HorizontalCameraMovement(const FInputActionInstance& pInstance)
+{
+	float lValue = pInstance.GetValue().Get<float>();
+
+	_isMovingCameraHorizonatly = true;
+	float lToAdd = lValue * _cameraOrientationSpeed;
+
+	if (FMath::Abs(_currentHorizontalCameraControlMoveValue + lToAdd) > _maxHorizontalCameraControl)
+	{
+		lToAdd = _maxHorizontalCameraControl - FMath::Abs(_currentHorizontalCameraControlMoveValue);
+
+		if (_currentHorizontalCameraControlMoveValue < 0)
+		{
+			lToAdd *= -1;
+			_currentHorizontalCameraControlMoveValue = _maxHorizontalCameraControl * -1;
+		}
+		else 
+		{
+			_currentHorizontalCameraControlMoveValue = _maxHorizontalCameraControl;
+		}
+
+	}
+	else
+	{
+		_currentHorizontalCameraControlMoveValue += lToAdd;
+	}
+	_springArm->SetRelativeRotation(_springArm->GetRelativeRotation().Add(0, lToAdd, 0));
+}
+
+void AOverboardPlayer::StopHorizontalCameraMovement(const FInputActionInstance& pInstance)
+{
+	_isMovingCameraHorizonatly = false;
 }
 
 void AOverboardPlayer::HorizontalMovement(const FInputActionInstance& pInstance) 
@@ -382,8 +446,6 @@ void AOverboardPlayer::Landing(const FHitResult& pHit)
 {
 	double lAngle = MathHelper::AngleBetweenVectors(pHit.GetActor()->GetActorUpVector(),_boardContainer->GetUpVector());
 
-	UScreenLogger::WriteOnScreen((float)lAngle);
-
 	if (lAngle < _landingYawTollerance)
 	{
 		UScreenLogger::WriteInfo("Win XP");
@@ -443,32 +505,36 @@ void AOverboardPlayer::SetAirArmOrientation(float pDeltaTime)
 
 float AOverboardPlayer::SetArmOrientation(FRotator pWantedRotation, float pTotalTime, float pDeltaTime, float pTolerance, float pSpeed)
 {
-	FRotator lSpringArmRot = _springArm->GetRelativeRotation();
-	FRotator lBoardContainerRot = _boardContainer->GetRelativeRotation();
-	double lCurrentPitchOffset = lSpringArmRot.Pitch - lBoardContainerRot.Pitch;
-	FRotator lNewRot;
-	double lLerpOffset;
-
-	if (FMath::Abs(lSpringArmRot.Pitch- pWantedRotation.Pitch) >= pTolerance
-		|| FMath::Abs(lSpringArmRot.Roll - pWantedRotation.Roll) >= pTolerance)
+	if (!_isMovingCameraVerticaly) 
 	{
-		pTotalTime += pDeltaTime;
-		lLerpOffset = pSpeed * pTotalTime;
+		FRotator lSpringArmRot = _springArm->GetRelativeRotation();
+		FRotator lBoardContainerRot = _boardContainer->GetRelativeRotation();
+		double lCurrentPitchOffset = lSpringArmRot.Pitch - lBoardContainerRot.Pitch;
+		FRotator lNewRot;
+		double lLerpOffset;
 
-		if (lLerpOffset >= 1)
+		if (FMath::Abs(lSpringArmRot.Pitch - pWantedRotation.Pitch) >= pTolerance
+			|| FMath::Abs(lSpringArmRot.Roll - pWantedRotation.Roll) >= pTolerance)
 		{
-			lLerpOffset = 1;
+			pTotalTime += pDeltaTime;
+			lLerpOffset = pSpeed * pTotalTime;
+
+			if (lLerpOffset >= 1)
+			{
+				lLerpOffset = 1;
+				pTotalTime = 0.f;
+			}
+
+			lNewRot = FMath::Lerp(lSpringArmRot, pWantedRotation, lLerpOffset);
+			lNewRot.Yaw = lSpringArmRot.Yaw;
+			_springArm->SetRelativeRotation(lNewRot);
+		}
+		else
+		{
 			pTotalTime = 0.f;
 		}
-
-		lNewRot = FMath::Lerp(lSpringArmRot, pWantedRotation, lLerpOffset);
-		lNewRot.Yaw = lSpringArmRot.Yaw;
-		_springArm->SetRelativeRotation(lNewRot);
 	}
-	else
-	{
-		pTotalTime = 0.f;
-	}
+	
 
 	return pTotalTime;
 }
