@@ -103,23 +103,45 @@ void AOverboardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AOverboardPlayer::VerticalCameraMovement(const FInputActionInstance& pInstance) 
 {
+
 	if (GetCharacterMovement()->IsMovingOnGround()) 
 	{
 		float lValue = pInstance.GetValue().Get<float>();
 
 		_isMovingCameraVerticaly = true;
+		float lToAdd = lValue * _cameraOrientationSpeed * -1;
 
-		_springArm->GetRelativeRotation().Add(lValue * _cameraOrientationSpeed,0,0);
+		if (FMath::Abs(_currentVerticalCameraControlMoveValue + lToAdd) > _maxVerticalCameraControl)
+		{
+			lToAdd = _maxVerticalCameraControl - FMath::Abs(_currentVerticalCameraControlMoveValue);
+
+			if (_currentVerticalCameraControlMoveValue < 0)
+			{
+				lToAdd *= -1;
+				_currentVerticalCameraControlMoveValue = _maxVerticalCameraControl * -1;
+			}
+			else
+			{
+				_currentVerticalCameraControlMoveValue = _maxVerticalCameraControl;
+			}
+
+		}
+		else
+		{
+			_currentVerticalCameraControlMoveValue += lToAdd;
+		}
+		
+		_springArm->SetRelativeRotation(_springArm->GetRelativeRotation().Add(lToAdd,0,0));
 	}
 	else 
 	{
-		_isMovingCameraVerticaly = false;
+		//_isMovingCameraVerticaly = false;
 	}
 }
 
 void AOverboardPlayer::StopVerticalCameraMovement(const FInputActionInstance& pInstance)
 {
-	_isMovingCameraVerticaly = false;
+	//_isMovingCameraVerticaly = false;
 }
 
 void AOverboardPlayer::VerticalMovement(const FInputActionInstance& pInstance)
