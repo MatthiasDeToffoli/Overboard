@@ -104,11 +104,6 @@ private:
 	float _maxVerticalCameraControl = 30;
 
 	/// <summary>
-	/// Current value in degrees of camera orientation control.
-	/// </summary>
-	float _currentVerticalCameraControlMoveValue = 0;
-
-	/// <summary>
 	/// Maximum value in degrees of camera orientation control.
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera")

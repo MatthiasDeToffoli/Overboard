@@ -56,8 +56,6 @@ void AOverboardPlayer::BeginPlay()
 	_baseTargetArmLength = _springArm->TargetArmLength;
 	_springArmOrientationOffset = _springArm->GetRelativeRotation() - _boardContainer->GetRelativeRotation();
 	_IsFlying = !GetCharacterMovement()->IsMovingOnGround();
-	_currentVerticalCameraControlMoveValue = 0;
-	_currentHorizontalCameraControlMoveValue = 0;
 
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -107,41 +105,32 @@ void AOverboardPlayer::VerticalCameraMovement(const FInputActionInstance& pInsta
 	if (GetCharacterMovement()->IsMovingOnGround()) 
 	{
 		float lValue = pInstance.GetValue().Get<float>();
-
+		FRotator lRot = _springArm->GetRelativeRotation();
 		_isMovingCameraVerticaly = true;
-		float lToAdd = lValue * _cameraOrientationSpeed * -1;
+		lRot.Pitch -= lValue * _cameraOrientationSpeed;
 
-		if (FMath::Abs(_currentVerticalCameraControlMoveValue + lToAdd) > _maxVerticalCameraControl)
+		if (lRot.Pitch < (_maxVerticalCameraControl * -1))
 		{
-			lToAdd = _maxVerticalCameraControl - FMath::Abs(_currentVerticalCameraControlMoveValue);
-
-			if (_currentVerticalCameraControlMoveValue < 0)
-			{
-				lToAdd *= -1;
-				_currentVerticalCameraControlMoveValue = _maxVerticalCameraControl * -1;
-			}
-			else
-			{
-				_currentVerticalCameraControlMoveValue = _maxVerticalCameraControl;
-			}
-
+			lRot.Pitch = _maxVerticalCameraControl * -1;
 		}
-		else
+		else if (_baseCameraOrientation.Pitch - lRot.Pitch  < 0)
 		{
-			_currentVerticalCameraControlMoveValue += lToAdd;
+			lRot.Pitch = _baseCameraOrientation.Pitch;
 		}
 		
-		_springArm->SetRelativeRotation(_springArm->GetRelativeRotation().Add(lToAdd,0,0));
+		_springArm->SetRelativeRotation(lRot);
 	}
 	else 
 	{
-		//_isMovingCameraVerticaly = false;
+		_isMovingCameraVerticaly = false;
 	}
+
+	//UScreenLogger::WriteOnScreen((float)(_springArm->GetRelativeRotation().Pitch - _baseCameraOrientation.Pitch));
 }
 
 void AOverboardPlayer::StopVerticalCameraMovement(const FInputActionInstance& pInstance)
 {
-	//_isMovingCameraVerticaly = false;
+	_isMovingCameraVerticaly = false;
 }
 
 void AOverboardPlayer::VerticalMovement(const FInputActionInstance& pInstance)
