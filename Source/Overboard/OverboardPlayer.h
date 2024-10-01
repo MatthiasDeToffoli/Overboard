@@ -81,27 +81,27 @@ private:
 	float _springArmAirCurrentRotationTime;
 
 	/**
+	* Time since the spring arm start to re ajuste it's rotation when the character is not on ground
+	*/
+	float _springArmResetYawTime;
+
+	/**
 	 * Main camera
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	UCameraComponent* _mainCamera;
 
 	/// <summary>
-	/// Maximum value in degrees of camera orientation control.
+	/// Maximum value in degrees of camera yaw orientation control.
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _maxHorizontalCameraControl = 30;
+	float _maxCameraYaw = 30;
 
 	/// <summary>
-	/// Current value in degrees of camera orientation control.
-	/// </summary>
-	float _currentHorizontalCameraControlMoveValue = 0;
-
-	/// <summary>
-	/// Maximum value in degrees of camera orientation control.
+	/// Maximum value in degrees of camera pitch orientation control.
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _maxVerticalCameraControl = 30;
+	float _maxCameraPitchControlled = 30;
 
 	/// <summary>
 	/// Maximum value in degrees of camera orientation control.
@@ -115,14 +115,14 @@ private:
 	FRotator _baseCameraOrientation;
 
 	/// <summary>
-	/// If the player is moving the camera horizontaly
+	/// If the player is moving the camera's yaw
 	/// </summary>
-	bool _isMovingCameraHorizonatly = false;
+	bool _isControllingCameraYaw = false;
 
 	/// <summary>
-	/// If the player is moving the camera verticaly
+	/// If the player is moving the camera's pitch
 	/// </summary>
-	bool _isMovingCameraVerticaly = false;
+	bool _isControllingCameraPitch = false;
 
 	// Board ----------------------------------------------------------------------------------------------------
 	/**
@@ -171,16 +171,16 @@ private:
 	UInputAction* _turnInputAction;
 
 	/**
-	 * Input action to accelerate
+	 * Input action to control the camera's yaw
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* _horizontalCameraControlInputAction;
+	UInputAction* _CameraYawControlInputAction;
 
 	/**
-	 * Input action to turn
+	 * Input action to control the camera's pitch
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* _verticalCameraControlInputAction;
+	UInputAction* _CameraPitchControlInputAction;
 
 	/**
 	 * Input action to jump
@@ -384,18 +384,37 @@ private:
 	TSubObjectType* CreateSubObjects(USceneComponent* pParent, FName pName);
 
 	/**
-	 * Manage vertical camera movement
+	 * Manage camera pitch control
 	 *
 	 * @param pInstance input instance used
 	 */
-	void VerticalCameraMovement(const FInputActionInstance& pInstance);
+	void CameraControlPitch(const FInputActionInstance& pInstance);
 
 	/**
-	 * Stop to manage vertical camera movement
+	 * Stop to manage camera pitch control
 	 *
 	 * @param pInstance input instance used
 	 */
-	void StopVerticalCameraMovement(const FInputActionInstance& pInstance);
+	void StopCameraControlPitch(const FInputActionInstance& pInstance);
+
+	/**
+	 * Manage camera yaw control
+	 *
+	 * @param pInstance input instance used
+	 */
+	void CameraControlYaw(const FInputActionInstance& pInstance);
+
+	/**
+	 * Stop to manage camera yaw control
+	 *
+	 * @param pInstance input instance used
+	 */
+	void StopCameraControlYaw(const FInputActionInstance& pInstance);
+
+	/**
+	 * Manage reset of yaw camera control
+	 */
+	void ResetCameraControlYaw();
 
 	/** 
 	 * Manage vertical movement
@@ -458,20 +477,6 @@ private:
 	 * Apply the new speed calculate with acceleration
 	 */
 	void ApplyNewSpeed();
-
-	/**
-	 * Manage horizontal camera movement
-	 *
-	 * @param pInstance input instance used
-	 */
-	void HorizontalCameraMovement(const FInputActionInstance& pInstance);
-
-	/**
-	 * Stop to manage horizontal camera movement
-	 *
-	 * @param pInstance input instance used
-	 */
-	void StopHorizontalCameraMovement(const FInputActionInstance& pInstance);
 
 	/**
 	 * Manage horizontal movement
