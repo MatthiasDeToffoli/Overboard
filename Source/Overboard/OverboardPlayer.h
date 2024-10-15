@@ -612,4 +612,9 @@ public:
 	virtual void Tick(float pDeltaTime) override;
 
 	virtual void Landed(const FHitResult& Hit) override;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	AActor* _viewed;
+
+	void CameraView();
 };

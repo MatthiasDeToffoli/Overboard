@@ -14,5 +14,24 @@ class OVERBOARD_API AOverboardCustomGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	
+public:
+	/**
+	 * Default constructor
+	 */
+	AOverboardCustomGameMode();
+
+private:
+	/**
+	* Check all actors in player's camera view
+	*/
+	void SearchEnemiesInView();
+
+public:
+
+	/**
+	 * Called every frame
+	 *
+	 * @param deltatime between two ticks
+	 */
+	virtual void Tick(float pDeltaTime) override;
 };

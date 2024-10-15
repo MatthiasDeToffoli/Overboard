@@ -72,7 +72,7 @@ void AOverboardPlayer::BeginPlay()
 void AOverboardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	
 	if (_accelerateInputAction)
 	{
 		UEnhancedInputComponent* lInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
@@ -576,4 +576,34 @@ void AOverboardPlayer::Landed(const FHitResult& Hit)
 	Landing(Hit);
 	_CurrentTimeToResetPitchWhenLanding = 0;
 	_boardGroundDetector->SetActiveFlag(true);
+}
+
+void AOverboardPlayer::CameraView()
+{
+	float DotP = FVector::DotProduct(_viewed->GetActorLocation(), _mainCamera->GetForwardVector());
+	GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Red, (FString::Printf(TEXT("D = %f"), DotP)));
+
+	if (FVector::Distance(_viewed->GetActorLocation(), _mainCamera->GetComponentLocation()) < 350 && FVector::Distance(_viewed->GetActorLocation(), _mainCamera->GetComponentLocation()) > 250)
+	{
+		if (DotP > -180 && DotP < 30) 
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Red, (FString::Printf(TEXT("Player"))));
+		}
+	}
+
+	if (FVector::Distance(_viewed->GetActorLocation(), this->GetActorLocation()) < 500 && FVector::Distance(_viewed->GetActorLocation(), this->GetActorLocation()) > 350)
+	{
+		if (DotP > -230 && DotP < 65) 
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Red, (FString::Printf(TEXT("Player"))));
+		}
+	}
+
+	if (FVector::Distance(_viewed->GetActorLocation(), this->GetActorLocation()) < 650 && FVector::Distance(_viewed->GetActorLocation(), this->GetActorLocation()) > 500)
+	{
+		if (DotP > -270 && DotP < 95) 
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Red, (FString::Printf(TEXT("Player"))));
+		}
+	}
 }
