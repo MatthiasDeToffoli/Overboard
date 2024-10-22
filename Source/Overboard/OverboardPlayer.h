@@ -363,6 +363,9 @@ private:
 	*/
 	bool _IsFlying;
 
+	//Enemies -----------------------------------------------------------------------------------------------------
+	AActor* _EnemyLocked;
+
 public:
 	/**
 	 * Default constructor
@@ -589,6 +592,22 @@ private:
 	*/
 	void Landing(const FHitResult& pHit);
 
+	/**
+	* Check if the enemy locked is still in view
+	*
+	* @param pEnemies new enemies in view
+	*
+	* @return true if the enemy is valid, false instead
+	*/
+	bool CheckEnemyLockedValididy(TArray<AActor*> pEnemies);
+
+	/**
+	* Update the enemy lock taking the closest by default
+	*
+	* @param pEnemies new enemies in view
+	*/
+	void UpdateEnemyLocked(TArray<AActor*> pEnemies);
+
 protected:
 	/**
 	 * Called when the game starts or when spawned
@@ -611,10 +630,17 @@ public:
 	 */
 	virtual void Tick(float pDeltaTime) override;
 
+	/**
+	* When the player just landed
+	* 
+	*  @param Hit the ground in landed on
+	*/
 	virtual void Landed(const FHitResult& Hit) override;
 
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	AActor* _viewed;
-
-	void CameraView();
+	/**
+	* When the array of enemies in view is updated
+	* 
+	* @param pEnemies new enemies in view
+	*/
+	void EnemiesInViewUpdated(TArray<AActor*> pEnemies);
 };

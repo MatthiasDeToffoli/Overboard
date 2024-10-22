@@ -14,3 +14,9 @@ AOverboardPlayer* AOverboardPlayerController::GetPlayer()
 
 	return nullptr;
 }
+
+void AOverboardPlayerController::UpdateEnemiesInView(TArray<AActor*> pEnemies) 
+{
+	enemiesInView = pEnemies;
+	GetPlayer()->EnemiesInViewUpdated(pEnemies);
+}

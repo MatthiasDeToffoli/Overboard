@@ -13,6 +13,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "MathHelper.h"
 #include "ScreenLogger.h"
+#include "OverboardPlayerController.h"
 
 // Sets default values
 AOverboardPlayer::AOverboardPlayer()
@@ -58,7 +59,7 @@ void AOverboardPlayer::BeginPlay()
 	_IsFlying = !GetCharacterMovement()->IsMovingOnGround();
 
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (AOverboardPlayerController* PlayerController = Cast<AOverboardPlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -578,32 +579,32 @@ void AOverboardPlayer::Landed(const FHitResult& Hit)
 	_boardGroundDetector->SetActiveFlag(true);
 }
 
-void AOverboardPlayer::CameraView()
+void AOverboardPlayer::EnemiesInViewUpdated(TArray<AActor*> pEnemies)
 {
-	float DotP = FVector::DotProduct(_viewed->GetActorLocation(), _mainCamera->GetForwardVector());
-	GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Red, (FString::Printf(TEXT("D = %f"), DotP)));
-
-	if (FVector::Distance(_viewed->GetActorLocation(), _mainCamera->GetComponentLocation()) < 350 && FVector::Distance(_viewed->GetActorLocation(), _mainCamera->GetComponentLocation()) > 250)
+	if (!_EnemyLocked || !CheckEnemyLockedValididy(pEnemies))
 	{
-		if (DotP > -180 && DotP < 30) 
+		UpdateEnemyLocked(pEnemies);
+	}
+}
+
+bool AOverboardPlayer::CheckEnemyLockedValididy(TArray<AActor*> pEnemies)
+{
+	return pEnemies.Contains(_EnemyLocked);
+}
+
+
+void AOverboardPlayer::UpdateEnemyLocked(TArray<AActor*> pEnemies)
+{
+	AActor* lClosestEnemy = nullptr;
+
+	// Loop through all actors you want to check
+	for (AActor* lEnemy : pEnemies)
+	{
+		FVector lPlayerLocation = GetActorLocation();
+		if (!lClosestEnemy || FVector::Dist(lPlayerLocation, lEnemy->GetActorLocation()) < FVector::Dist(lPlayerLocation, lClosestEnemy->GetActorLocation()))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Red, (FString::Printf(TEXT("Player"))));
+			lClosestEnemy = lEnemy;
 		}
 	}
-
-	if (FVector::Distance(_viewed->GetActorLocation(), this->GetActorLocation()) < 500 && FVector::Distance(_viewed->GetActorLocation(), this->GetActorLocation()) > 350)
-	{
-		if (DotP > -230 && DotP < 65) 
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Red, (FString::Printf(TEXT("Player"))));
-		}
-	}
-
-	if (FVector::Distance(_viewed->GetActorLocation(), this->GetActorLocation()) < 650 && FVector::Distance(_viewed->GetActorLocation(), this->GetActorLocation()) > 500)
-	{
-		if (DotP > -270 && DotP < 95) 
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Red, (FString::Printf(TEXT("Player"))));
-		}
-	}
+	_EnemyLocked = lClosestEnemy;
 }

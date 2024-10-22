@@ -21,54 +21,39 @@ void AOverboardCustomGameMode::Tick(float pDeltaTime)
 void AOverboardCustomGameMode::SearchEnemiesInView()
 {
     APlayerController* lBaseController = GetWorld()->GetFirstPlayerController();
-    
+
     if (!lBaseController) return;
-    
+
     AOverboardPlayerController* lPlayerController = Cast<AOverboardPlayerController>(lBaseController);
 
     if (!lPlayerController) return;
 
     FVector lCameraLocation;
-    FVector lPlayerLocation = lPlayerController->GetPawn()->GetActorLocation();
     FRotator lCameraRotation;
     lPlayerController->GetPlayerViewPoint(lCameraLocation, lCameraRotation);
 
     FVector CameraForward = lCameraRotation.Vector();
     float CameraFOV = lPlayerController->PlayerCameraManager->GetFOVAngle();
 
+    TArray<AActor*> lEnemiesInView;
     TArray<AActor*> lEnemies;
-    AActor* lClosestEnemy = nullptr;
+
     UGameplayStatics::GetAllActorsWithTag(GetWorld(), "Enemy", lEnemies);
 
     // Loop through all actors you want to check
     for (AActor* lEnemy : lEnemies)
     {
-        FVector lActorLocation = lEnemy->GetActorLocation();
-
-        FVector lDirectionToActor = (lActorLocation - lCameraLocation).GetSafeNormal();
-        float lDotProduct = FVector::DotProduct(CameraForward, lDirectionToActor);
+        float lDotProduct = FVector::DotProduct(CameraForward, (lEnemy->GetActorLocation() - lCameraLocation).GetSafeNormal());
 
         // Convert FOV from degrees to radians for comparison
-        float lHalfFOVRadians = FMath::DegreesToRadians(CameraFOV / 2.0f);
-        float lCosHalfFOV = FMath::Cos(lHalfFOVRadians);
+        float lCosHalfFOV = FMath::Cos(FMath::DegreesToRadians(CameraFOV / 2.0f));
 
         // If the dot product is greater than cos of half FOV, actor is in view
         if (lDotProduct >= lCosHalfFOV)
         {
-            UScreenLogger::WriteInfo(FString::Printf(TEXT("%s is within view"), *lEnemy->GetName()));
-        }
-
-        // If the dot product is greater than cos of half FOV, actor is in view
-        if (lDotProduct >= lCosHalfFOV && 
-            (!lClosestEnemy|| FVector::Dist(lPlayerLocation, lActorLocation) < FVector::Dist(lPlayerLocation, lClosestEnemy->GetActorLocation())))
-        {
-            //Keep only the closest enemy
-            lClosestEnemy = lEnemy;
+            lEnemiesInView.Add(lEnemy);
         }
     }
 
-    if (lClosestEnemy)
-    {
-        UScreenLogger::WriteInfo(FString::Printf(TEXT("Enemy found %s"), *lClosestEnemy->GetName()));
-    }
+    lPlayerController->UpdateEnemiesInView(lEnemies);
 }
