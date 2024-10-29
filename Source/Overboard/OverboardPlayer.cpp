@@ -2,6 +2,7 @@
 
 
 #include "OverboardPlayer.h"
+#include "ActorBuilder.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -21,25 +22,12 @@ AOverboardPlayer::AOverboardPlayer()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	_boardContainer = CreateSubObjects<USceneComponent>(RootComponent, "Board container");
-	_boardDefaultPosition = CreateSubObjects<USceneComponent>(_boardContainer, "Idle default board position");
-	_boardMesh = CreateSubObjects<UStaticMeshComponent>(_boardContainer, "Board mesh");
-	_springArm = CreateSubObjects<USpringArmComponent>(RootComponent, "Spring arm");
-	_mainCamera = CreateSubObjects<UCameraComponent>(_springArm, "Main camera");
-	_boardGroundDetector = CreateSubObjects<USceneComponent>(RootComponent, "Board's ground detector");
-}
-
-template<class TSubObjectType>
-TSubObjectType* AOverboardPlayer::CreateSubObjects(USceneComponent* pParent, FName pName)
-{
-	TSubObjectType* lObject = CreateDefaultSubobject<TSubObjectType>(pName);
-
-	if (lObject) 
-	{
-		lObject->SetupAttachment(pParent);
-	}
-
-	return lObject;
+	_boardContainer = UActorBuilder::CreateSubObjects<USceneComponent>(this, RootComponent, "Board container");
+	_boardDefaultPosition = UActorBuilder::CreateSubObjects<USceneComponent>(this, _boardContainer, "Idle default board position");
+	_boardMesh = UActorBuilder::CreateSubObjects<UStaticMeshComponent>(this, _boardContainer, "Board mesh");
+	_springArm = UActorBuilder::CreateSubObjects<USpringArmComponent>(this, RootComponent, "Spring arm");
+	_mainCamera = UActorBuilder::CreateSubObjects<UCameraComponent>(this, _springArm, "Main camera");
+	_boardGroundDetector = UActorBuilder::CreateSubObjects<USceneComponent>(this, RootComponent, "Board's ground detector");
 }
 
 // Called when the game starts or when spawned
@@ -581,9 +569,13 @@ void AOverboardPlayer::Landed(const FHitResult& Hit)
 
 void AOverboardPlayer::EnemiesInViewUpdated(TArray<AActor*> pEnemies)
 {
-	if (!_EnemyLocked || !CheckEnemyLockedValididy(pEnemies))
+	if (!_EnemyLocked)
 	{
 		UpdateEnemyLocked(pEnemies);
+	}
+	else if (!CheckEnemyLockedValididy(pEnemies))
+	{
+		_EnemyLocked->SetTargeted(false);
 	}
 }
 
@@ -606,5 +598,6 @@ void AOverboardPlayer::UpdateEnemyLocked(TArray<AActor*> pEnemies)
 			lClosestEnemy = lEnemy;
 		}
 	}
-	_EnemyLocked = lClosestEnemy;
+	_EnemyLocked = Cast<ABaseTargetable>(lClosestEnemy);
+	_EnemyLocked->SetTargeted(true);
 }

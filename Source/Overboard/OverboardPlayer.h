@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "BaseTargetable.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "OverboardPlayer.generated.h"
@@ -364,7 +365,7 @@ private:
 	bool _IsFlying;
 
 	//Enemies -----------------------------------------------------------------------------------------------------
-	AActor* _EnemyLocked;
+	ABaseTargetable* _EnemyLocked;
 
 public:
 	/**
@@ -373,19 +374,6 @@ public:
 	AOverboardPlayer();
 
 private:
-	/**
-	 * Create a subobject added to the character
-	 *
-	 * @param pParent component parent of the subobject
-	 * @param pName name of the suboject
-	 *
-	 * @tparam TSubObjectType type of the suboject to create
-	 *
-	 * @return suboject created
-	 */
-	template<class TSubObjectType>
-	TSubObjectType* CreateSubObjects(USceneComponent* pParent, FName pName);
-
 	/**
 	 * Manage camera pitch control
 	 *

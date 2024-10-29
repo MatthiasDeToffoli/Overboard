@@ -2,6 +2,7 @@
 
 
 #include "OverboardCustomGameMode.h"
+#include "BaseTargetable.h"
 #include "Kismet/GameplayStatics.h"
 #include "OverboardPlayerController.h"
 #include "ScreenLogger.h"
@@ -38,7 +39,7 @@ void AOverboardCustomGameMode::SearchEnemiesInView()
     TArray<AActor*> lEnemiesInView;
     TArray<AActor*> lEnemies;
 
-    UGameplayStatics::GetAllActorsWithTag(GetWorld(), "Enemy", lEnemies);
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseTargetable::StaticClass(), lEnemies);
 
     // Loop through all actors you want to check
     for (AActor* lEnemy : lEnemies)
