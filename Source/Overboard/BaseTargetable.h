@@ -18,6 +18,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "General", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* _mainContainer;
 
+	/**
+	* Mesh of the target will show to the player which is targeted
+	*/
 	UPROPERTY(EditAnywhere, Category = "Target")
 	UStaticMeshComponent* _targetMesh;
 
@@ -27,6 +30,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Graphism", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* _graphismContainer;
 
+	/**
+	*Main mesh of the Targetable actor
+	*/
 	UPROPERTY(EditAnywhere, Category = "Graphism")
 	UStaticMeshComponent* _mainMesh;
 	
@@ -41,6 +47,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public :
+	/**
+	*Call when the actor is targeted by the player
+	*/
 	void SetTargeted(bool pIsTargeted);
 
 };

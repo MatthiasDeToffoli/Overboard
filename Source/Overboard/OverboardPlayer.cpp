@@ -569,13 +569,19 @@ void AOverboardPlayer::Landed(const FHitResult& Hit)
 
 void AOverboardPlayer::EnemiesInViewUpdated(TArray<AActor*> pEnemies)
 {
-	if (!_EnemyLocked)
+	if ((!&pEnemies || pEnemies.Num() == 0) && _EnemyLocked)
+	{
+		_EnemyLocked->SetTargeted(false);
+		_EnemyLocked = nullptr;
+	}
+	else if (!_EnemyLocked)
 	{
 		UpdateEnemyLocked(pEnemies);
 	}
 	else if (!CheckEnemyLockedValididy(pEnemies))
 	{
 		_EnemyLocked->SetTargeted(false);
+		UpdateEnemyLocked(pEnemies);
 	}
 }
 
@@ -598,6 +604,10 @@ void AOverboardPlayer::UpdateEnemyLocked(TArray<AActor*> pEnemies)
 			lClosestEnemy = lEnemy;
 		}
 	}
-	_EnemyLocked = Cast<ABaseTargetable>(lClosestEnemy);
-	_EnemyLocked->SetTargeted(true);
+
+	if (lClosestEnemy)
+	{
+		_EnemyLocked = Cast<ABaseTargetable>(lClosestEnemy);
+		_EnemyLocked->SetTargeted(true);
+	}
 }

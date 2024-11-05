@@ -21,6 +21,11 @@ void AOverboardCustomGameMode::Tick(float pDeltaTime)
 
 void AOverboardCustomGameMode::SearchEnemiesInView()
 {
+    FVector lCameraLocation;
+    FRotator lCameraRotation;
+    TArray<AActor*> lEnemiesInView;
+    TArray<AActor*> lEnemies;
+    FVector lDirectionToEnemy;
     APlayerController* lBaseController = GetWorld()->GetFirstPlayerController();
 
     if (!lBaseController) return;
@@ -29,32 +34,28 @@ void AOverboardCustomGameMode::SearchEnemiesInView()
 
     if (!lPlayerController) return;
 
-    FVector lCameraLocation;
-    FRotator lCameraRotation;
     lPlayerController->GetPlayerViewPoint(lCameraLocation, lCameraRotation);
 
-    FVector CameraForward = lCameraRotation.Vector();
-    float CameraFOV = lPlayerController->PlayerCameraManager->GetFOVAngle();
+    float lCameraFOV = lPlayerController->PlayerCameraManager->GetFOVAngle() + _offsetCameraFOV;
+    float lAspectRatio = lPlayerController->PlayerCameraManager->GetCameraCacheView().AspectRatio;
 
-    TArray<AActor*> lEnemiesInView;
-    TArray<AActor*> lEnemies;
+    // Horizontal and vertical half angles in radians
+    float lHorHalfFOVRad = FMath::DegreesToRadians(lCameraFOV / 2.0f);
+    float lVerHalfFOVRad = FMath::Atan(FMath::Tan(lHorHalfFOVRad) / lAspectRatio);
 
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseTargetable::StaticClass(), lEnemies);
 
-    // Loop through all actors you want to check
     for (AActor* lEnemy : lEnemies)
     {
-        float lDotProduct = FVector::DotProduct(CameraForward, (lEnemy->GetActorLocation() - lCameraLocation).GetSafeNormal());
+        lDirectionToEnemy = (lEnemy->GetActorLocation() - lCameraLocation).GetSafeNormal();
 
-        // Convert FOV from degrees to radians for comparison
-        float lCosHalfFOV = FMath::Cos(FMath::DegreesToRadians(CameraFOV / 2.0f));
-
-        // If the dot product is greater than cos of half FOV, actor is in view
-        if (lDotProduct >= lCosHalfFOV)
+        //Check horizontal and vertical for more efficient result
+        if (FVector::DotProduct(lCameraRotation.Vector(), lDirectionToEnemy) >= FMath::Cos(lHorHalfFOVRad)
+            && FMath::Abs(FVector::DotProduct(lDirectionToEnemy, lCameraRotation.Quaternion().GetRightVector())) <= FMath::Tan(lVerHalfFOVRad))
         {
             lEnemiesInView.Add(lEnemy);
         }
     }
 
-    lPlayerController->UpdateEnemiesInView(lEnemies);
+    lPlayerController->UpdateEnemiesInView(lEnemiesInView);
 }

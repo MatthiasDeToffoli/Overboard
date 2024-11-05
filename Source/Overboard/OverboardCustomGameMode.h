@@ -14,6 +14,13 @@ class OVERBOARD_API AOverboardCustomGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+private:
+	/**
+	* offset for camera FOV to detect enemies in a largest zone
+	*/
+	UPROPERTY(EditAnywhere)
+	float _offsetCameraFOV = 20;
+
 public:
 	/**
 	 * Default constructor
