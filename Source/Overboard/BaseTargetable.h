@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Components/WidgetComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BaseTargetable.generated.h"
@@ -19,10 +20,10 @@ private:
 	USceneComponent* _mainContainer;
 
 	/**
-	* Mesh of the target will show to the player which is targeted
+	* Widget of the target will show to the player which is targeted
 	*/
 	UPROPERTY(EditAnywhere, Category = "Target")
-	UStaticMeshComponent* _targetMesh;
+	UWidgetComponent* _targetWidgetComponent;
 
 	/**
 	 * Default position of the board, used for doing some calculation on the board movement

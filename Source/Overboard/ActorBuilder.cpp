@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Explicit template instantiation for the types needed-----------------------------------------------------------------------------------------------------------------------
@@ -13,6 +14,7 @@ template UStaticMeshComponent* UActorBuilder::CreateSubObjects<UStaticMeshCompon
 template USpringArmComponent* UActorBuilder::CreateSubObjects<USpringArmComponent>(AActor*, USceneComponent*, FName);
 template UCapsuleComponent* UActorBuilder::CreateSubObjects<UCapsuleComponent>(AActor*, USceneComponent*, FName);
 template UCameraComponent* UActorBuilder::CreateSubObjects<UCameraComponent>(AActor*, USceneComponent*, FName);
+template UWidgetComponent* UActorBuilder::CreateSubObjects<UWidgetComponent>(AActor*, USceneComponent*, FName);
 
 //Methodes-----------------------------------------------------------------------------------------------------------------------
 template<class TSubObjectType>
