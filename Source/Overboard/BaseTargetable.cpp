@@ -3,6 +3,7 @@
 
 #include "BaseTargetable.h"
 #include "ActorBuilder.h"
+#include <Kismet/KismetMathLibrary.h>
 //#include "Components/StaticMeshComponent.h"
 
 // Sets default values
@@ -27,4 +28,24 @@ void ABaseTargetable::BeginPlay()
 void ABaseTargetable::SetTargeted(bool pIsTargeted)
 {
 	_targetWidgetComponent->SetVisibility(pIsTargeted, true);
+}
+
+void ABaseTargetable::UpdateTargetRotation(FVector pPlayerPos, float pDeltaTime)
+{
+    FVector lCurrentLoc = GetActorLocation();
+
+    // Calculate direction from the cube to the target actor
+    FVector lDirectionToPlayer = pPlayerPos - lCurrentLoc;
+    lDirectionToPlayer.Normalize();
+
+    float lWidgetLocalDist = FVector::Distance(_mainMesh->GetRelativeLocation(), _targetWidgetComponent->GetRelativeLocation());
+    FVector lNewWidgetPos = lCurrentLoc + lDirectionToPlayer * lWidgetLocalDist;
+
+    // Set the widget's position
+    _targetWidgetComponent->SetWorldLocation(lNewWidgetPos);
+
+    // Make the widget face the target actor
+    FRotator TargetRotation = UKismetMathLibrary::MakeRotFromX(pPlayerPos - lNewWidgetPos);
+    _targetWidgetComponent->SetWorldRotation(TargetRotation);
+
 }

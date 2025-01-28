@@ -437,6 +437,11 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 	{
 		_springArmResetYawTime = 0;
 	}
+
+	if (_EnemyLocked)
+	{
+		_EnemyLocked->UpdateTargetRotation(GetActorLocation(), pDeltaTime);
+	}
 }
 
 void AOverboardPlayer::Landing(const FHitResult& pHit)

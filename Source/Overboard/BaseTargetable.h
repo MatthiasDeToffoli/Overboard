@@ -50,7 +50,17 @@ protected:
 public :
 	/**
 	*Call when the actor is targeted by the player
+	* 
+	* @param pIsTargeted if the actor is targeted by the player or not
 	*/
 	void SetTargeted(bool pIsTargeted);
+
+	/**
+	* Update the Target rotation to always look at the player
+	* 
+	* @param pPlayerPos player position
+	* @param pDeltaTime tick's delta time
+	*/
+	void UpdateTargetRotation(FVector pPlayerPos, float pDeltaTime);
 
 };
