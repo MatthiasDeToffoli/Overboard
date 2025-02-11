@@ -187,7 +187,7 @@ private:
 	 * Input action to jump
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpInputAction;
+	UInputAction* _JumpInputAction;
 
 	// Idle -----------------------------------------------------------------------------------------------------
 
@@ -364,8 +364,9 @@ private:
 	*/
 	bool _IsFlying;
 
+public:
 	//Enemies -----------------------------------------------------------------------------------------------------
-	ABaseTargetable* _EnemyLocked;
+	ABaseTargetable* EnemyLocked;
 
 public:
 	/**
@@ -595,7 +596,6 @@ private:
 	* @param pEnemies new enemies in view
 	*/
 	void UpdateEnemyLocked(TArray<AActor*> pEnemies);
-
 protected:
 	/**
 	 * Called when the game starts or when spawned
@@ -631,4 +631,11 @@ public:
 	* @param pEnemies new enemies in view
 	*/
 	void EnemiesInViewUpdated(TArray<AActor*> pEnemies);
+
+	/**
+	* Update the enemy lock
+	*
+	* @param pEnemy new enemy to lock
+	*/
+	void UpdateEnemyLocked(ABaseTargetable* pEnemy);
 };

@@ -61,30 +61,28 @@ void AOverboardPlayer::BeginPlay()
 void AOverboardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
-	if (_accelerateInputAction)
+
+	UEnhancedInputComponent* lInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+
+	if (lInput) 
 	{
-		UEnhancedInputComponent* lInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+		// Jumping
+		lInput->BindAction(_JumpInputAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+		lInput->BindAction(_JumpInputAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
-		if (lInput) 
-		{
-			// Jumping
-			lInput->BindAction(JumpInputAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-			lInput->BindAction(JumpInputAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		// Character movement
+		lInput->BindAction(_accelerateInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::VerticalMovement);
+		lInput->BindAction(_accelerateInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopAccelerate);
+		lInput->BindAction(_turnInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::HorizontalMovement);
+		lInput->BindAction(_turnInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopTurning);
 
-			// Character movement
-			lInput->BindAction(_accelerateInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::VerticalMovement);
-			lInput->BindAction(_accelerateInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopAccelerate);
-			lInput->BindAction(_turnInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::HorizontalMovement);
-			lInput->BindAction(_turnInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopTurning);
-
-			// Camera
-			lInput->BindAction(_CameraPitchControlInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::CameraControlPitch);
-			lInput->BindAction(_CameraPitchControlInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopCameraControlPitch);
-			lInput->BindAction(_CameraYawControlInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::CameraControlYaw);
-			lInput->BindAction(_CameraYawControlInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopCameraControlYaw);
-		}
+		// Camera
+		lInput->BindAction(_CameraPitchControlInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::CameraControlPitch);
+		lInput->BindAction(_CameraPitchControlInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopCameraControlPitch);
+		lInput->BindAction(_CameraYawControlInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::CameraControlYaw);
+		lInput->BindAction(_CameraYawControlInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopCameraControlYaw);
 	}
+	
 	
 }
 
@@ -438,9 +436,9 @@ void AOverboardPlayer::Tick(float pDeltaTime)
 		_springArmResetYawTime = 0;
 	}
 
-	if (_EnemyLocked)
+	if (EnemyLocked)
 	{
-		_EnemyLocked->UpdateTargetRotation(GetActorLocation(), pDeltaTime);
+		EnemyLocked->UpdateTargetRotation(GetActorLocation(), pDeltaTime);
 	}
 }
 
@@ -574,25 +572,25 @@ void AOverboardPlayer::Landed(const FHitResult& Hit)
 
 void AOverboardPlayer::EnemiesInViewUpdated(TArray<AActor*> pEnemies)
 {
-	if ((!&pEnemies || pEnemies.Num() == 0) && _EnemyLocked)
+	if ((!&pEnemies || pEnemies.Num() == 0) && EnemyLocked)
 	{
-		_EnemyLocked->SetTargeted(false);
-		_EnemyLocked = nullptr;
+		EnemyLocked->SetTargeted(false);
+		EnemyLocked = nullptr;
 	}
-	else if (!_EnemyLocked)
+	else if (!EnemyLocked)
 	{
 		UpdateEnemyLocked(pEnemies);
 	}
 	else if (!CheckEnemyLockedValididy(pEnemies))
 	{
-		_EnemyLocked->SetTargeted(false);
+		EnemyLocked->SetTargeted(false);
 		UpdateEnemyLocked(pEnemies);
 	}
 }
 
 bool AOverboardPlayer::CheckEnemyLockedValididy(TArray<AActor*> pEnemies)
 {
-	return pEnemies.Contains(_EnemyLocked);
+	return pEnemies.Contains(EnemyLocked);
 }
 
 
@@ -612,7 +610,21 @@ void AOverboardPlayer::UpdateEnemyLocked(TArray<AActor*> pEnemies)
 
 	if (lClosestEnemy)
 	{
-		_EnemyLocked = Cast<ABaseTargetable>(lClosestEnemy);
-		_EnemyLocked->SetTargeted(true);
+		EnemyLocked = Cast<ABaseTargetable>(lClosestEnemy);
+		EnemyLocked->SetTargeted(true);
+	}
+}
+
+void AOverboardPlayer::UpdateEnemyLocked(ABaseTargetable* pEnemy)
+{
+	if (pEnemy)
+	{
+		if (EnemyLocked)
+		{
+			EnemyLocked->SetTargeted(false);
+		}
+
+		EnemyLocked = pEnemy;
+		EnemyLocked->SetTargeted(true);
 	}
 }
