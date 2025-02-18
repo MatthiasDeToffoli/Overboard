@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "OverboardPlayer.generated.h"
 
+class ABaseBullet;
 struct FInputActionInstance;
 struct FInputActionValue;
 class UCameraComponent;
@@ -189,6 +190,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* _JumpInputAction;
 
+	/**
+	 * Input action to shoot
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* _ShootInputAction;
+
 	// Idle -----------------------------------------------------------------------------------------------------
 
 	/**
@@ -363,6 +370,25 @@ private:
 	* if the character is flying or not
 	*/
 	bool _IsFlying;
+
+	//Shoot -----------------------------------------------------------------------------------------------------
+	/**
+	* base class of the bullet
+	*/
+	UPROPERTY(EditAnywhere, Category = "Shoot")
+	TSubclassOf<ABaseBullet> _BulletClass;
+	/**
+	* Bullet speed
+	* temporary, will remove it when will manage weapons
+	*/
+	UPROPERTY(EditAnywhere, Category = "Shoot")
+	float _BulletSpeed;
+
+	/**
+	* Spawner of the bullet
+	*/
+	UPROPERTY(EditAnywhere, Category = "Shoot")
+	USceneComponent* _BulletSpawner;
 
 public:
 	//Enemies -----------------------------------------------------------------------------------------------------
@@ -638,4 +664,9 @@ public:
 	* @param pEnemy new enemy to lock
 	*/
 	void UpdateEnemyLocked(ABaseTargetable* pEnemy);
+
+	/**
+	* Shoot on a target
+	*/
+	void Shoot();
 };

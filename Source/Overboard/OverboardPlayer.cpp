@@ -3,6 +3,7 @@
 
 #include "OverboardPlayer.h"
 #include "ActorBuilder.h"
+#include "BaseBullet.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -28,6 +29,7 @@ AOverboardPlayer::AOverboardPlayer()
 	_springArm = UActorBuilder::CreateSubObjects<USpringArmComponent>(this, RootComponent, "Spring arm");
 	_mainCamera = UActorBuilder::CreateSubObjects<UCameraComponent>(this, _springArm, "Main camera");
 	_boardGroundDetector = UActorBuilder::CreateSubObjects<USceneComponent>(this, RootComponent, "Board's ground detector");
+	_BulletSpawner = UActorBuilder::CreateSubObjects<USceneComponent>(this, RootComponent, "Bullet spawner");
 }
 
 // Called when the game starts or when spawned
@@ -81,6 +83,9 @@ void AOverboardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		lInput->BindAction(_CameraPitchControlInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopCameraControlPitch);
 		lInput->BindAction(_CameraYawControlInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayer::CameraControlYaw);
 		lInput->BindAction(_CameraYawControlInputAction, ETriggerEvent::None, this, &AOverboardPlayer::StopCameraControlYaw);
+
+		//shoot
+		lInput->BindAction(_ShootInputAction, ETriggerEvent::Started, this, &AOverboardPlayer::Shoot);
 	}
 	
 	
@@ -626,5 +631,26 @@ void AOverboardPlayer::UpdateEnemyLocked(ABaseTargetable* pEnemy)
 
 		EnemyLocked = pEnemy;
 		EnemyLocked->SetTargeted(true);
+	}
+}
+
+void AOverboardPlayer::Shoot()
+{
+
+	if(_BulletClass && EnemyLocked && _BulletSpawner && _BulletSpeed > 0)
+	{
+		// Get the player’s shooting location (e.g., from a gun socket or camera)
+		FVector lSpawnLocation = _BulletSpawner->GetComponentLocation();
+		FVector lTargetLocation = EnemyLocked->GetActorLocation();
+		FRotator lSpawnRotation = (lTargetLocation - lSpawnLocation).Rotation();
+
+		FActorSpawnParameters lSpawnParams;
+		lSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		ABaseBullet* lBullet = GetWorld()->SpawnActor<ABaseBullet>(_BulletClass, lSpawnLocation, lSpawnRotation, lSpawnParams);
+		if (lBullet)
+		{
+			lBullet->Configure(lSpawnLocation, lTargetLocation,_BulletSpeed);
+		}
 	}
 }
