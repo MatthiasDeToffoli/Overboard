@@ -16,6 +16,7 @@ ABaseTargetable::ABaseTargetable()
 	_targetWidgetComponent = UActorBuilder::CreateSubObjects<UWidgetComponent>(this, _mainContainer, "Target widget component");
 	_graphismContainer = UActorBuilder::CreateSubObjects<USceneComponent>(this, _mainContainer, "Graphism container");
 	_mainMesh = UActorBuilder::CreateSubObjects<UStaticMeshComponent>(this, _graphismContainer, "Main mesh");
+	_healthComponent = CreateDefaultSubobject<UHealthComponent>("Health");
 }
 
 
@@ -48,4 +49,13 @@ void ABaseTargetable::UpdateTargetRotation(FVector pPlayerPos, float pDeltaTime)
     FRotator TargetRotation = UKismetMathLibrary::MakeRotFromX(pPlayerPos - lNewWidgetPos);
     _targetWidgetComponent->SetWorldRotation(TargetRotation);
 
+}
+
+float ABaseTargetable::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (_healthComponent->ApplyDamage(DamageAmount))
+	{
+		Destroy();
+	}
+	return DamageAmount;
 }

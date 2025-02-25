@@ -4,6 +4,7 @@
 
 #include "Components/WidgetComponent.h"
 #include "CoreMinimal.h"
+#include "HealthComponent.h"
 #include "GameFramework/Actor.h"
 #include "BaseTargetable.generated.h"
 
@@ -36,6 +37,13 @@ private:
 	*/
 	UPROPERTY(EditAnywhere, Category = "Graphism")
 	UStaticMeshComponent* _mainMesh;
+
+	//Health -----------------------------------------------------------------------------------------------------
+	/**
+	* Health of the player
+	*/
+	UPROPERTY(EditAnywhere, Category = "Health")
+	UHealthComponent* _healthComponent;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -62,5 +70,15 @@ public :
 	* @param pDeltaTime tick's delta time
 	*/
 	void UpdateTargetRotation(FVector pPlayerPos, float pDeltaTime);
+
+	/**
+	* Functioàn to handle demages
+	* 
+	* @param DamageAmount amount of damage to apply
+	* @param DamageEvent event of the damage
+	* @param EventInstigator instigator of the damage
+	* @param DamageCauser causer of the damage
+	*/
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 };

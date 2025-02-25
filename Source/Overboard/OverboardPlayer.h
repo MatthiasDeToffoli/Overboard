@@ -5,6 +5,7 @@
 #include "BaseTargetable.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "HealthComponent.h"
 #include "OverboardPlayer.generated.h"
 
 class ABaseBullet;
@@ -377,6 +378,7 @@ private:
 	*/
 	UPROPERTY(EditAnywhere, Category = "Shoot")
 	TSubclassOf<ABaseBullet> _BulletClass;
+
 	/**
 	* Bullet speed
 	* temporary, will remove it when will manage weapons
@@ -390,6 +392,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Shoot")
 	USceneComponent* _BulletSpawner;
 
+	/**
+	* Bullet damage
+	* temporary, will remove it when will manage weapons
+	*/
+	UPROPERTY(EditAnywhere, Category = "Shoot")
+	int _BulletDamage;
+	
+	//Health -----------------------------------------------------------------------------------------------------
+	/**
+	* Health of the player
+	*/
+	UPROPERTY(EditAnywhere, Category = "Health")
+	UHealthComponent* _healthComponent;
 public:
 	//Enemies -----------------------------------------------------------------------------------------------------
 	ABaseTargetable* EnemyLocked;

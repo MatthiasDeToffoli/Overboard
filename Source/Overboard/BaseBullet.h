@@ -45,6 +45,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	UProjectileMovementComponent* _ProjectileMovement;
 
+	int _damage;
+
 public:	
 	/**
 	* Configure the bullet to shoot the target
@@ -52,7 +54,18 @@ public:
 	* @param pStartLocation Location of the bullet spawner
 	* @param pTargetLocation Location of the target to shoot
 	* @param pSpeed speed of the bullet
+	* @param pDamage damage of the bullet
 	*/
-	void Configure(FVector pStartLocation, FVector pTargetLocation, float pSpeed);
+	void Configure(FVector pStartLocation, FVector pTargetLocation, float pSpeed, int pDamage);
+
+	/*
+	* Call when the actor hit something
+	* 
+	* @param pHitActor the actor hit
+	* @param pNormalImpulse the normal impulse of the hit
+	* @param pHit the hit result
+	*/
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* pHitComponent, AActor* pHitActor, UPrimitiveComponent* pOtherComponent, FVector pNormalImpulse, const FHitResult& pHit);
 
 };

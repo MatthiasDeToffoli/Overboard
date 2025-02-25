@@ -30,6 +30,7 @@ AOverboardPlayer::AOverboardPlayer()
 	_mainCamera = UActorBuilder::CreateSubObjects<UCameraComponent>(this, _springArm, "Main camera");
 	_boardGroundDetector = UActorBuilder::CreateSubObjects<USceneComponent>(this, RootComponent, "Board's ground detector");
 	_BulletSpawner = UActorBuilder::CreateSubObjects<USceneComponent>(this, RootComponent, "Bullet spawner");
+	_healthComponent = CreateDefaultSubobject<UHealthComponent>("Health");
 }
 
 // Called when the game starts or when spawned
@@ -650,7 +651,7 @@ void AOverboardPlayer::Shoot()
 		ABaseBullet* lBullet = GetWorld()->SpawnActor<ABaseBullet>(_BulletClass, lSpawnLocation, lSpawnRotation, lSpawnParams);
 		if (lBullet)
 		{
-			lBullet->Configure(lSpawnLocation, lTargetLocation,_BulletSpeed);
+			lBullet->Configure(lSpawnLocation, lTargetLocation,_BulletSpeed, _BulletDamage);
 		}
 	}
 }
