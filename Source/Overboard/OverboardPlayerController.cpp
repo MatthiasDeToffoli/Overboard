@@ -3,7 +3,6 @@
 
 #include "OverboardPlayerController.h"
 #include <EnhancedInputComponent.h>
-#include "ScreenLogger.h"
 
 AOverboardPlayer* AOverboardPlayerController::GetPlayer()
 {

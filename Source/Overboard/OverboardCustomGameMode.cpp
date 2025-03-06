@@ -5,7 +5,6 @@
 #include "BaseTargetable.h"
 #include "Kismet/GameplayStatics.h"
 #include "OverboardPlayerController.h"
-#include "ScreenLogger.h"
 
 AOverboardCustomGameMode::AOverboardCustomGameMode()
 {

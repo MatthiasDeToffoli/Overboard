@@ -31,11 +31,12 @@ int UHealthComponent::GetHealth()
 
 bool UHealthComponent::ApplyDamage(int pDamage)
 {
-	_CurrentHealthPoint -= - pDamage;
+	_CurrentHealthPoint -= pDamage;
 	return _CurrentHealthPoint <= 0;
 }
 
 void UHealthComponent::Heal(int pHealPoints)
 {
+	
 	_CurrentHealthPoint = FMath::Min(_CurrentHealthPoint + pHealPoints, _MaxHealthPoint);
 }

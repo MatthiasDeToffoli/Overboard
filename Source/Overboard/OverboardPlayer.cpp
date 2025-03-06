@@ -647,7 +647,7 @@ void AOverboardPlayer::Shoot()
 
 		FActorSpawnParameters lSpawnParams;
 		lSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
+		
 		ABaseBullet* lBullet = GetWorld()->SpawnActor<ABaseBullet>(_BulletClass, lSpawnLocation, lSpawnRotation, lSpawnParams);
 		if (lBullet)
 		{

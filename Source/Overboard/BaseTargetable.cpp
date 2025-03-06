@@ -4,7 +4,6 @@
 #include "BaseTargetable.h"
 #include "ActorBuilder.h"
 #include <Kismet/KismetMathLibrary.h>
-//#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 ABaseTargetable::ABaseTargetable()
@@ -24,6 +23,7 @@ void ABaseTargetable::BeginPlay()
 {
 	Super::BeginPlay();
 	_targetWidgetComponent->SetVisibility(false, true);
+	SetCanBeDamaged(true);
 }
 
 void ABaseTargetable::SetTargeted(bool pIsTargeted)
