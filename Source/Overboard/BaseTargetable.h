@@ -9,7 +9,7 @@
 #include "BaseTargetable.generated.h"
 
 UCLASS()
-class OVERBOARD_API ABaseTargetable : public AActor
+class OVERBOARD_API ABaseTargetable : public APawn
 {
 	GENERATED_BODY()
 
