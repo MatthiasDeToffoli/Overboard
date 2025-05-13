@@ -29,6 +29,12 @@ public:
 	float wallAvoidingDistance = 300.f;
 
 	/// <summary>
+	/// Offset to see the aread the enemy check to avoid walls
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
+	float avoidingOffsetValue = 50.f;
+
+	/// <summary>
 	/// Movement speed
 	/// </summary>
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")

@@ -36,8 +36,20 @@ private:
 	/// <param name="pCurrentLocation">Current enemy pawn location</param>
 	/// <param name="pDirection">Direction to check</param>
 	/// <param name="pAvoidDistance">Distance the enemy as to stop from the obstacle</param>
+	/// <param name="offset">Offset to see the aread the enemy check to avoid walls</param>
+	/// <param name="pParams">Collision parameters</param>
 	/// <returns><c>true</c> if there is an obstacle, <c>false</c> instead</returns>
-	bool CheckHasObstacle(FVector pCurrentLocation, FVector pDirection, float pAvoidDistance);
+	bool CheckHasObstacle(FVector pCurrentLocation, FVector pDirection, float pAvoidDistance, float offset, FCollisionQueryParams pParams);
+
+    /// <summary>
+    /// Check if there is an obstacle in a direction
+    /// </summary>
+    /// <param name="pCurrentLocation">Current enemy pawn location</param>
+    /// <param name="pDirection">Direction to check</param>
+    /// <param name="pAvoidDistance">Distance the enemy as to stop from the obstacle</param>
+    /// <param name="pParams">Collision parameters</param>
+    /// <returns><c>true</c> if there is an obstacle, <c>false</c> instead</returns>
+    bool CheckHasObstacle(FVector pCurrentLocation, FVector pDirection, float pAvoidDistance, FCollisionQueryParams pParams);
 protected:
     /// <summary>
     /// Execute the task

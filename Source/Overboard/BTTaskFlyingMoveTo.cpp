@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Pawn.h"
+#include "ScreenLogger.h"
 
 UBTTaskFlyingMoveTo::UBTTaskFlyingMoveTo()
 {
@@ -29,15 +30,40 @@ ABaseEnemy* UBTTaskFlyingMoveTo::GetEnemyPawn(UBehaviorTreeComponent& pOwnerComp
 	return nullptr;
 }
 
-bool UBTTaskFlyingMoveTo::CheckHasObstacle(FVector pCurrentLocation, FVector pDirection, float pAvoidDistance)
+bool UBTTaskFlyingMoveTo::CheckHasObstacle(FVector pCurrentLocation, FVector pDirection, float pAvoidDistance, FCollisionQueryParams pParams)
 {
-	FHitResult lHit;
+    FHitResult lHit;
     return GetWorld()->LineTraceSingleByChannel(
-		lHit,
-		pCurrentLocation,
-		pCurrentLocation + pDirection * pAvoidDistance,
-		ECC_WorldStatic
-	);
+        lHit,
+        pCurrentLocation,
+        pCurrentLocation + pDirection * pAvoidDistance,
+        ECollisionChannel::ECC_WorldStatic,
+        pParams
+    );
+}
+
+bool UBTTaskFlyingMoveTo::CheckHasObstacle(FVector pCurrentLocation, FVector pDirection, float pAvoidDistance, float offset, FCollisionQueryParams pParams)
+{
+	bool lResult = false;
+    TArray<FVector> lPositionsToCheck =
+    {
+        pCurrentLocation,
+        pCurrentLocation + FVector(offset, 0.f, 0.f),
+        pCurrentLocation + FVector(offset, offset, 0.f),
+        pCurrentLocation - FVector(offset, offset, 0.f),
+    };
+
+	for (const FVector& lPos : lPositionsToCheck)
+	{
+		lResult = CheckHasObstacle(lPos, pDirection, pAvoidDistance, pParams);
+		
+        if (lResult)
+		{
+			break;
+		}
+	}
+	
+    return lResult;
 }
 
 EBTNodeResult::Type UBTTaskFlyingMoveTo::ExecuteTask(UBehaviorTreeComponent& pOwnerComp, uint8* pNodeMemory)
@@ -62,28 +88,29 @@ void UBTTaskFlyingMoveTo::TickTask(UBehaviorTreeComponent& pOwnerComp, uint8* pN
     if (lEnemy) 
     {
         FVector lCurrentLocation = lEnemy->GetActorLocation();
-
+        FCollisionQueryParams lParams;
+		lParams.AddIgnoredActor(lEnemy);
         FVector lFinalDirection = (targetLocation - lCurrentLocation).GetSafeNormal();
 
-        FVector Forward = lEnemy->GetActorForwardVector();
-        FVector Right = lEnemy->GetActorRightVector();
+        FVector lRight = lEnemy->GetActorRightVector();
 
-        float AvoidDistance = lEnemy->wallAvoidingDistance;
+        float lAvoidDistance = lEnemy->wallAvoidingDistance;
+        float lOffset = lEnemy->avoidingOffsetValue;
 
-        if (CheckHasObstacle(lCurrentLocation, Forward, AvoidDistance))
+        if (CheckHasObstacle(lCurrentLocation, lEnemy->GetActorForwardVector(), lAvoidDistance, lOffset , lParams))
         {
             if (lEnemy->isStupid) 
             {
                 return;
             }
 
-            if (!CheckHasObstacle(lCurrentLocation, Forward + Right, AvoidDistance))
+            if (!CheckHasObstacle(lCurrentLocation, lRight, lAvoidDistance, lParams))
             {
-                lFinalDirection += Right;
+                lFinalDirection = lRight;
             }
-            else if (!CheckHasObstacle(lCurrentLocation, Forward - Right, AvoidDistance))
+            else if (!CheckHasObstacle(lCurrentLocation, -lRight, lAvoidDistance, lParams))
             {
-                lFinalDirection -= Right;
+                lFinalDirection = -lRight;
             }
             else
             {
