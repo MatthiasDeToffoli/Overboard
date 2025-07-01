@@ -45,6 +45,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	UProjectileMovementComponent* _ProjectileMovement;
 
+	/**
+	* Damage of the bullet
+	*/
 	int _damage;
 
 public:	

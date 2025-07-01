@@ -18,7 +18,7 @@ private:
 	/**
 	* offset for camera FOV to detect enemies in a largest zone
 	*/
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Enemy targeting")
 	float _offsetCameraFOV = 20;
 
 public:
