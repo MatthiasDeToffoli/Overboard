@@ -15,12 +15,6 @@ class OVERBOARD_API ABaseTargetable : public APawn
 
 private:
 	/**
-	 * Default position of the board, used for doing some calculation on the board movement
-	 */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "General", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* _mainContainer;
-
-	/**
 	* Widget of the target will show to the player which is targeted
 	*/
 	UPROPERTY(EditAnywhere, Category = "Target")
@@ -45,6 +39,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Health")
 	UHealthComponent* _healthComponent;
 	
+protected :
+	/**
+	 * Default position of the board, used for doing some calculation on the board movement
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "General", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* _mainContainer;
 public:	
 	// Sets default values for this actor's properties
 	ABaseTargetable();
