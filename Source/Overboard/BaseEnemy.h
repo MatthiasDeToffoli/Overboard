@@ -61,12 +61,15 @@ public:
 
 public:
 	/*
-	* Call when the actor hit something
+	* Call when the actor overlap something
 	*
-	* @param pHitActor the actor hit
-	* @param pNormalImpulse the normal impulse of the hit
-	* @param pHit the hit result
+	* @param pOverlappedComp the component caller
+	* @param pOtherActor the actor overlapped
+	* @param pOtherComp the component overlapped
+	* @param pOtherBodyIndex the actor overlapped's body index
+	* @param pFromSweep if it used sweep
+	* @param pSweepResult the sweep result
 	*/
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* pHitComponent, AActor* pHitActor, UPrimitiveComponent* pOtherComponent, FVector pNormalImpulse, const FHitResult& pHit);
+	void OnBeginOverlap(UPrimitiveComponent* pOverlappedComp, AActor* pOtherActor, UPrimitiveComponent* pOtherComp, int32 pOtherBodyIndex, bool pFromSweep, const FHitResult& pSweepResult);
 };

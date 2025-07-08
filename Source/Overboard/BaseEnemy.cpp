@@ -4,27 +4,27 @@
 #include "BaseEnemy.h"
 #include <Kismet/GameplayStatics.h>
 #include "OverboardPlayer.h"
+#include "ScreenLogger.h"
 
 ABaseEnemy::ABaseEnemy()
 {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
-
+	
 	_CollisionComponent = CreateDefaultSubobject<USphereComponent>("Collision's box");
-	_CollisionComponent->SetupAttachment(_mainContainer);
 	if (_mainContainer)
 	{
-		_CollisionComponent->SetupAttachment(_mainContainer);
+		_CollisionComponent->SetupAttachment(RootComponent);
 	}
 
-	_CollisionComponent->OnComponentHit.AddDynamic(this, &ABaseEnemy::OnHit);
+	_CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnBeginOverlap);
 }
 
-void ABaseEnemy::OnHit(UPrimitiveComponent* pHitComponent, AActor* pHitActor, UPrimitiveComponent* pOtherComponent, FVector pNormalImpulse, const FHitResult& pHit)
+void ABaseEnemy::OnBeginOverlap(UPrimitiveComponent* pOverlappedComp, AActor* pOtherActor, UPrimitiveComponent* pOtherComp, int32 pOtherBodyIndex, bool pFromSweep, const FHitResult& pSweepResult)
 {
-	if (pHitActor->IsA(AOverboardPlayer::StaticClass()))
+	if (pOtherActor->IsA(AOverboardPlayer::StaticClass()))
 	{
-		AOverboardPlayer* lTarget = Cast<AOverboardPlayer>(pHitActor);
+		AOverboardPlayer* lTarget = Cast<AOverboardPlayer>(pOtherActor);
 
 		if (lTarget)
 		{
@@ -33,5 +33,4 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* pHitComponent, AActor* pHitActor, UP
 
 		Destroy();
 	}
-
 }
