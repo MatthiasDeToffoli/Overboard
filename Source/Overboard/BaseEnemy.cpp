@@ -14,7 +14,7 @@ ABaseEnemy::ABaseEnemy()
 	_CollisionComponent = CreateDefaultSubobject<USphereComponent>("Collision's box");
 	if (_mainContainer)
 	{
-		_CollisionComponent->SetupAttachment(RootComponent);
+		_CollisionComponent->SetupAttachment(_mainContainer);
 	}
 
 	_CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnBeginOverlap);

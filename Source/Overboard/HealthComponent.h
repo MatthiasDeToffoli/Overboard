@@ -43,7 +43,12 @@ public:
 	/**
 	 * public getter of _CurrentHealthPoint 
 	*/
-	int GetHealth();
+	int GetHealth() const;
+
+	/**
+	* public getter of _MaxHealthPoint
+	*/
+	int GetMaxHealth() const;
 
 	/**
 	 * Apply damage to the healthpoints

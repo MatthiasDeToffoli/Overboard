@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "HealthComponent.h"
+#include "OverboardHUDWidget.h"
 #include "OverboardPlayer.generated.h"
 
 class ABaseBullet;
@@ -405,6 +406,18 @@ private:
 	*/
 	UPROPERTY(EditAnywhere, Category = "Health")
 	UHealthComponent* _healthComponent;
+
+	//HUD ----------------------------------------------------------------------------------------------------------
+	/**
+	* Reference to the HUD Widget Blueprint class
+	*/
+	UPROPERTY(EditAnywhere, Category = "HUD")
+	TSubclassOf<UOverboardHUDWidget> _playerHUDWidgetClass;
+
+	/**
+	* Actual widget instance
+	*/
+	UOverboardHUDWidget* _playerHUDWidget;
 public:
 	//Enemies -----------------------------------------------------------------------------------------------------
 	ABaseTargetable* EnemyLocked;
@@ -684,4 +697,14 @@ public:
 	* Shoot on a target
 	*/
 	void Shoot();
+
+	/**
+	* Functioàn to handle demages
+	*
+	* @param DamageAmount amount of damage to apply
+	* @param DamageEvent event of the damage
+	* @param EventInstigator instigator of the damage
+	* @param DamageCauser causer of the damage
+	*/
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };

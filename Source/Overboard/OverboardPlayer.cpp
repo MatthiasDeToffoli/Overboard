@@ -57,6 +57,18 @@ void AOverboardPlayer::BeginPlay()
 			Subsystem->AddMappingContext(_defaultMappingContext, 0);
 		}
 	}
+
+	//Add HUD
+	if (_playerHUDWidgetClass)
+	{
+		_playerHUDWidget = CreateWidget<UOverboardHUDWidget>(GetWorld(), _playerHUDWidgetClass, "HUD");
+
+		if (_playerHUDWidget)
+		{
+			_playerHUDWidget->AddToViewport();
+			_playerHUDWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
 }
 
 // Input
@@ -654,4 +666,22 @@ void AOverboardPlayer::Shoot()
 			lBullet->Configure(lSpawnLocation, lTargetLocation,_BulletSpeed, _BulletDamage);
 		}
 	}
+}
+
+float AOverboardPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	
+
+	if (_healthComponent->ApplyDamage(DamageAmount))
+	{
+		UScreenLogger::WriteInfo("Player is dead");
+	}
+
+	//Update the HUD
+	if (_playerHUDWidget)
+	{
+		_playerHUDWidget->UpdateHealth(_healthComponent->GetHealth(), _healthComponent->GetMaxHealth());
+	}
+
+	return DamageAmount;
 }

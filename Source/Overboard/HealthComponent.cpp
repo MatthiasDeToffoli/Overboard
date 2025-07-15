@@ -24,9 +24,14 @@ void UHealthComponent::Initialize()
 	_CurrentHealthPoint = _MaxHealthPoint;
 }
 
-int UHealthComponent::GetHealth()
+int UHealthComponent::GetHealth() const
 {
 	return _CurrentHealthPoint;
+}
+
+int UHealthComponent::GetMaxHealth() const
+{
+	return _MaxHealthPoint;
 }
 
 bool UHealthComponent::ApplyDamage(int pDamage)
