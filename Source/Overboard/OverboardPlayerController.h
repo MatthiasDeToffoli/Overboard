@@ -77,4 +77,9 @@ public:
 	* @param pEnemies all enemies in view
 	*/
 	void UpdateEnemiesInView(TArray<AActor*> pEnemies);
+
+	/**
+	* get the HUD with the custom type
+	*/
+	AOverboardHUD* GetCastHUD();
 };

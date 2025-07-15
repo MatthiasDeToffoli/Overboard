@@ -105,3 +105,12 @@ void AOverboardPlayerController::UpdateEnemiesInView(TArray<AActor*> pEnemies)
 	enemiesInView = pEnemies;
 	GetPlayer()->EnemiesInViewUpdated(pEnemies);
 }
+
+AOverboardHUD* AOverboardPlayerController::GetCastHUD()
+{
+	if (AOverboardHUD* lHUD = Cast<AOverboardHUD>(GetHUD()))
+	{
+		return lHUD;
+	}
+	return nullptr;
+}

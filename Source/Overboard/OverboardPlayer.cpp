@@ -56,19 +56,13 @@ void AOverboardPlayer::BeginPlay()
 		{
 			Subsystem->AddMappingContext(_defaultMappingContext, 0);
 		}
+
+		//Get HUD
+		_playerHUD = PlayerController->GetCastHUD();
 	}
 
-	//Add HUD
-	if (_playerHUDWidgetClass)
-	{
-		_playerHUDWidget = CreateWidget<UOverboardHUDWidget>(GetWorld(), _playerHUDWidgetClass, "HUD");
+	
 
-		if (_playerHUDWidget)
-		{
-			_playerHUDWidget->AddToViewport();
-			_playerHUDWidget->SetVisibility(ESlateVisibility::Visible);
-		}
-	}
 }
 
 // Input
@@ -678,9 +672,9 @@ float AOverboardPlayer::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	}
 
 	//Update the HUD
-	if (_playerHUDWidget)
+	if (_playerHUD)
 	{
-		_playerHUDWidget->UpdateHealth(_healthComponent->GetHealth(), _healthComponent->GetMaxHealth());
+		_playerHUD->UpdateHealth(_healthComponent->GetHealth(), _healthComponent->GetMaxHealth());
 	}
 
 	return DamageAmount;

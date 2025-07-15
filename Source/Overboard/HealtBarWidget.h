@@ -2,16 +2,16 @@
 
 #pragma once
 
-#include "Components/ProgressBar.h"
+#include <Components/ProgressBar.h>
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "OverboardHUDWidget.generated.h"
+#include "HealtBarWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OVERBOARD_API UOverboardHUDWidget : public UUserWidget
+class OVERBOARD_API UHealtBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	

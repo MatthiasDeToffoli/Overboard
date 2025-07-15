@@ -6,8 +6,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "HealthComponent.h"
-#include "OverboardHUDWidget.h"
+#include "OverboardHUD.h"
 #include "OverboardPlayer.generated.h"
+
 
 class ABaseBullet;
 struct FInputActionInstance;
@@ -409,15 +410,9 @@ private:
 
 	//HUD ----------------------------------------------------------------------------------------------------------
 	/**
-	* Reference to the HUD Widget Blueprint class
+	* Current HUD
 	*/
-	UPROPERTY(EditAnywhere, Category = "HUD")
-	TSubclassOf<UOverboardHUDWidget> _playerHUDWidgetClass;
-
-	/**
-	* Actual widget instance
-	*/
-	UOverboardHUDWidget* _playerHUDWidget;
+	AOverboardHUD* _playerHUD;
 public:
 	//Enemies -----------------------------------------------------------------------------------------------------
 	ABaseTargetable* EnemyLocked;
