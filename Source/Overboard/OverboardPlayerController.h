@@ -30,6 +30,10 @@ private :
 
 	bool _CanSelectANewTarget;
 
+	/**
+	* Current player score
+	*/
+	int _currentScore;
 private:
 	/**
 	* Change the tarfet
@@ -53,6 +57,13 @@ private:
 	* To make the player release the button before select another enemy
 	*/
 	void UnblockTargetChanging();
+
+	/**
+	* Set the current score value
+	* 
+	* @param pVal the value to set
+	*/
+	void SetScoreValue(int pVal);
 protected:
 	/**
 	 * Called when the game starts or when spawned
@@ -82,4 +93,11 @@ public:
 	* get the HUD with the custom type
 	*/
 	AOverboardHUD* GetCastHUD();
+
+	/**
+	* Update the player score
+	* 
+	* @param pToAdd the score to add to the current score
+	*/
+	void UpdateScore(int pToAdd);
 };

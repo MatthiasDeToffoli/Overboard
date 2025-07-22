@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "HealtBarWidget.h"
+#include "HUDWidget.h"
 #include "OverboardHUD.generated.h"
 
 /**
@@ -20,12 +20,12 @@ private:
 	* Reference to the HUD Widget Blueprint class
 	*/
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UHealtBarWidget> _healtBarWidgetClass;
+	TSubclassOf<UHUDWidget> _hudWidgetClass;
 
 	/**
 	* Actual widget instance
 	*/
-	UHealtBarWidget* _healtBarWidget;
+	UHUDWidget* _hudWidget;
 
 protected:
 	/**
@@ -41,4 +41,11 @@ public:
 	 * @param pMaxHealth Maximum health of the player
 	 */
 	void UpdateHealth(float pHealth, float pMaxHealth);
+
+	/**
+	* Update the score text
+	* 
+	* @param pScore Current score of the player
+	*/
+	void UpdateScore(int pScore);
 };

@@ -664,8 +664,6 @@ void AOverboardPlayer::Shoot()
 
 float AOverboardPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	
-
 	if (_healthComponent->ApplyDamage(DamageAmount))
 	{
 		UScreenLogger::WriteInfo("Player is dead");

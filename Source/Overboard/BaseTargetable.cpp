@@ -4,6 +4,7 @@
 #include "BaseTargetable.h"
 #include "ActorBuilder.h"
 #include <Kismet/KismetMathLibrary.h>
+#include "OverboardPlayerController.h"
 
 // Sets default values
 ABaseTargetable::ABaseTargetable()
@@ -55,6 +56,11 @@ float ABaseTargetable::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 {
 	if (_healthComponent->ApplyDamage(DamageAmount))
 	{
+		if (AOverboardPlayerController* lPlayerCont = Cast<AOverboardPlayerController>(GetWorld()->GetFirstPlayerController()))
+		{
+			lPlayerCont->UpdateScore(_scoreToGive);
+		}
+		
 		Destroy();
 	}
 	return DamageAmount;

@@ -19,6 +19,7 @@ AOverboardPlayer* AOverboardPlayerController::GetPlayer()
 void AOverboardPlayerController::BeginPlay()
 {
 	_CanSelectANewTarget = true;
+	SetScoreValue(0);
 }
 
 void AOverboardPlayerController::SetupInputComponent()
@@ -113,4 +114,19 @@ AOverboardHUD* AOverboardPlayerController::GetCastHUD()
 		return lHUD;
 	}
 	return nullptr;
+}
+
+void AOverboardPlayerController::SetScoreValue(int pVal)
+{
+	_currentScore = pVal;
+
+	if (AOverboardHUD* lHUD = GetCastHUD())
+	{
+		lHUD->UpdateScore(_currentScore);
+	}
+}
+
+void AOverboardPlayerController::UpdateScore(int pScore)
+{
+	SetScoreValue(_currentScore + pScore);
 }

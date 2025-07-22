@@ -39,6 +39,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Health")
 	UHealthComponent* _healthComponent;
 	
+	//Score -----------------------------------------------------------------------------------------------------
+	/**
+	* Score to give to the player when the target is destroyed
+	*/
+	UPROPERTY(EditAnywhere, Category = "Score")
+	int _scoreToGive = 10;
 protected :
 	/**
 	 * Default position of the board, used for doing some calculation on the board movement
