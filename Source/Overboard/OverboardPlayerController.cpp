@@ -130,3 +130,8 @@ void AOverboardPlayerController::UpdateScore(int pScore)
 {
 	SetScoreValue(_currentScore + pScore);
 }
+
+int AOverboardPlayerController::GetCurrentScore() const
+{
+	return _currentScore;
+}

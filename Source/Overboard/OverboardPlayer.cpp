@@ -16,6 +16,7 @@
 #include "MathHelper.h"
 #include "ScreenLogger.h"
 #include "OverboardPlayerController.h"
+#include "OverboardCustomGameMode.h"
 
 // Sets default values
 AOverboardPlayer::AOverboardPlayer()
@@ -664,9 +665,10 @@ void AOverboardPlayer::Shoot()
 
 float AOverboardPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	if (_healthComponent->ApplyDamage(DamageAmount))
+	AOverboardCustomGameMode* lGameMode = Cast<AOverboardCustomGameMode>(UGameplayStatics::GetGameMode(this));
+	if (_healthComponent->ApplyDamage(DamageAmount) && lGameMode)
 	{
-		UScreenLogger::WriteInfo("Player is dead");
+		lGameMode->ShowEndScreen();
 	}
 
 	//Update the HUD

@@ -100,4 +100,6 @@ public:
 	* @param pToAdd the score to add to the current score
 	*/
 	void UpdateScore(int pToAdd);
+
+	int GetCurrentScore() const;
 };
