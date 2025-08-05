@@ -91,6 +91,9 @@ void UEndScreen::ShowLeaderboard()
     for (const ScoreData& lData : _scoreDatas)
     {
         UTextBlock* ScoreLine = NewObject<UTextBlock>(this);
+		ScoreLine->SetColorAndOpacity(FLinearColor::White);
+		ScoreLine->SetJustification(ETextJustify::Center);
+		ScoreLine->Font.Size = 50;
         ScoreLine->SetText(FText::FromString(lData.ToString()));
         _scoreScrollBox->AddChild(ScoreLine);
     }

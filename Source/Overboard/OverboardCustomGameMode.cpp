@@ -78,9 +78,11 @@ UUserWidget* AOverboardCustomGameMode::ShowScreen(TSubclassOf<UUserWidget> pScre
     if (pScreenClass)
     {
         APlayerController* lPlayerController = UGameplayStatics::GetPlayerController(this, 0);
+        
         if (lPlayerController)
         {
-            lScreen = CreateWidget<UUserWidget>(lPlayerController, _endScreenClass);
+
+            lScreen = CreateWidget<UUserWidget>(lPlayerController, pScreenClass);
             if (lScreen)
             {
                 lScreen->AddToViewport();
