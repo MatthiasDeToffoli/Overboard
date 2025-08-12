@@ -9,16 +9,16 @@ void AOverboardHUD::BeginPlay()
 	Super::BeginPlay();
 	
 	
-	if (_hudWidgetClass)
+	if (_hudWidgetClass && !_hudWidget)
 	{
-		UScreenLogger::WriteInfo("Creating Health Bar Widget");
 		_hudWidget = CreateWidget<UHUDWidget>(GetWorld(), _hudWidgetClass, "Health Bar");
 
 		if (_hudWidget)
 		{
-			UScreenLogger::WriteInfo("Created Health Bar Widget");
 			_hudWidget->AddToViewport();
-			_hudWidget->SetVisibility(ESlateVisibility::Visible);
+
+
+			_hudWidget->SetVisibility(IsHidden() ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
 		}
 	}
 }
@@ -39,3 +39,24 @@ void AOverboardHUD::UpdateScore(int pScore)
 		_hudWidget->UpdateScoreText(pScore);
 	}
 }
+
+void AOverboardHUD::HideHUD()
+{
+	if (_hudWidget)
+	{
+		_hudWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	Super::SetHidden(true);
+}
+
+void AOverboardHUD::ShowHUD()
+{
+	if (_hudWidget)
+	{
+		_hudWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	Super::ShowHUD();
+}
+

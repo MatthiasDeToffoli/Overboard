@@ -48,4 +48,8 @@ public:
 	* @param pScore Current score of the player
 	*/
 	void UpdateScore(int pScore);
+
+	void HideHUD();
+
+	void ShowHUD() override;
 };

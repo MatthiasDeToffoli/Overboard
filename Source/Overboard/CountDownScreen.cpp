@@ -29,10 +29,12 @@ void UCountDownScreen::UpdateCountdown()
         {
             _countdownText->SetText(FText::AsNumber(_currentCount));
         }
-        else
+        else if(_currentCount > -1)
         {
             _countdownText->SetText(FText::FromString(TEXT("Start!")));
-
+        }
+        else 
+        {
             // Stop timer
             GetWorld()->GetTimerManager().ClearTimer(_countdownTimerHandle);
 

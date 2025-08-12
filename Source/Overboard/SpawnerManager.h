@@ -53,6 +53,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enemy spawn")
 	TSubclassOf<ABaseTargetable> _enemyClass;
 
+public:
+	/**
+	* if spawning is enabled
+	*/
+	bool IsSpawningEnabled = false;
+
 public:	
 	// Sets default values for this actor's properties
 	ASpawnerManager();

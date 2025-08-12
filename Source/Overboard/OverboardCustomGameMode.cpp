@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "OverboardPlayerController.h"
 #include "CountDownScreen.h"
+#include "ScreenLogger.h"
+#include "SpawnerManager.h"
 
 AOverboardCustomGameMode::AOverboardCustomGameMode()
 {
@@ -27,18 +29,22 @@ void AOverboardCustomGameMode::ShowStartScreen()
 
 void AOverboardCustomGameMode::StartGame()
 {
-    if (_startScreen)
+    if (_countDownScreen)
     {
-        _startScreen->RemoveFromParent();
-        _startScreen = nullptr;
+        _countDownScreen->RemoveFromParent();
+        _countDownScreen = nullptr;
 
         APlayerController* lPlayerComp = UGameplayStatics::GetPlayerController(this, 0);
         if (lPlayerComp)
         {
             lPlayerComp->SetInputMode(FInputModeGameOnly());
             lPlayerComp->bShowMouseCursor = false;
+			lPlayerComp->GetHUD()->ShowHUD();
 
-            UGameplayStatics::SetGamePaused(this, false);
+            if (ASpawnerManager* lSpawnerManager = Cast<ASpawnerManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ASpawnerManager::StaticClass())))
+			{
+				lSpawnerManager->IsSpawningEnabled = true;
+			}
         }
     }
 }
@@ -56,6 +62,7 @@ void AOverboardCustomGameMode::ShowCountDownScreen()
 	if (UCountDownScreen* lCastScreen = Cast< UCountDownScreen>(_countDownScreen))
 	{
 		lCastScreen->BeginCountdown(_countDownTime);
+        UGameplayStatics::SetGamePaused(this, false);
 	}
 }
 
@@ -77,10 +84,11 @@ UUserWidget* AOverboardCustomGameMode::ShowScreen(TSubclassOf<UUserWidget> pScre
 
     if (pScreenClass)
     {
-        APlayerController* lPlayerController = UGameplayStatics::GetPlayerController(this, 0);
+        AOverboardPlayerController* lPlayerController = Cast<AOverboardPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
         
         if (lPlayerController)
         {
+			lPlayerController->GetCastHUD()->HideHUD();
 
             lScreen = CreateWidget<UUserWidget>(lPlayerController, pScreenClass);
             if (lScreen)

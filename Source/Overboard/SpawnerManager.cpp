@@ -17,6 +17,7 @@ void ASpawnerManager::BeginPlay()
 {
 	Super::BeginPlay();
 	
+    IsSpawningEnabled = false;
 	// Initialize spawn time
 	_currentSpawnTime = _maxSpawnTime;
 	_currentTimeBetweenSpawns = 0;
@@ -27,10 +28,14 @@ void ASpawnerManager::Tick(float pDeltaTime)
 {
 	Super::Tick(pDeltaTime);
 
-	_currentTimeBetweenSpawns += pDeltaTime;
+    if (IsSpawningEnabled)
+    {
+        _currentTimeBetweenSpawns += pDeltaTime;
 
-	if (_currentTimeBetweenSpawns >= _currentSpawnTime)
-		SpawnEnemy();
+        if (_currentTimeBetweenSpawns >= _currentSpawnTime)
+            SpawnEnemy();
+    }
+	
 }
 
 void ASpawnerManager::SpawnEnemy()
