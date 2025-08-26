@@ -12,5 +12,5 @@ ScoreData::ScoreData(const FString pName, const int pScore)
 
 FString ScoreData::ToString() const
 {
-	return FString::Printf(TEXT("%s %d %s"), *_name, Score, *_date);
+	return FString::Printf(TEXT("%s - %d - %s"), *_name, Score, *_date);
 }

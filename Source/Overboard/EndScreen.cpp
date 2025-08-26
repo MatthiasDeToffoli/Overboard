@@ -25,15 +25,36 @@ void UEndScreen::NativeConstruct()
 
 void UEndScreen::OnSaveClicked()
 {
-    const FString lName = _initialsTextBox->GetText().ToString().Left(3).ToUpper();
+    const FString lName = _initialsTextBox->GetText().ToString();
+	_scoreDatas.Add(ScoreData(lName, _score));
     SaveScoreToFile(lName);
     ShowLeaderboard();
 }
 void UEndScreen::Init(int pScore)
 {
 	_score = pScore;
+	_saveButton->SetIsEnabled(false);
+	FName lName = FName(*FString::FromInt(pScore));
+	_initialsTextBox->OnTextChanged.AddDynamic(this,&UEndScreen::OnInitialTextChanged);
     LoadScores();
 }
+
+void UEndScreen::OnInitialTextChanged(const FText& pText)
+{
+	int lTextLength = pText.ToString().Len();
+
+	if (lTextLength > 3)
+	{
+		_initialsTextBox->SetText(FText::FromString(pText.ToString().Left(3).ToUpper()));
+	    _saveButton->SetIsEnabled(true);
+	}
+    else
+    {
+        _initialsTextBox->SetText(FText::FromString(pText.ToString().ToUpper()));
+		_saveButton->SetIsEnabled(lTextLength == 3);
+	}
+}
+
 void UEndScreen::OnCancelClicked()
 {
     ShowLeaderboard();

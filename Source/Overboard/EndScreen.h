@@ -50,6 +50,9 @@ private:
     void OnSaveClicked();
 
     UFUNCTION()
+	void OnInitialTextChanged(const FText& Text);
+
+    UFUNCTION()
     void OnCancelClicked();
 
     UFUNCTION()
