@@ -16,7 +16,7 @@ class OVERBOARD_API UEndScreen : public UUserWidget
 	GENERATED_BODY()
 	
 private:
-    FString const SAVE_KEY = "Save";
+    FString const SAVE_KEY = "OverboardSave";
     // UI Bindings
     UPROPERTY(meta = (BindWidget))
     class UEditableTextBox* _initialsTextBox;
@@ -39,7 +39,7 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UButton* _quitButton;
 
-    TArray<ScoreData> _scoreDatas;
+    TArray<FScoreData> _scoreDatas;
 
     int _score;
 
@@ -64,7 +64,7 @@ private:
     void ShowLeaderboard();
 
     void LoadScores();
-    void SaveScoreToFile(const FString& pName);
+    void SaveScoreToFile();
 public:
     void Init(int pScore);
 };

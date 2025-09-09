@@ -3,22 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ScoreData.generated.h"
 
 /**
  * 
  */
-struct OVERBOARD_API ScoreData
+USTRUCT(BlueprintType)
+struct OVERBOARD_API FScoreData
 {
-private :
+	GENERATED_BODY()
 
+private:
+	UPROPERTY(EditAnywhere)
 	FString _name;
+	UPROPERTY(EditAnywhere)
 	FString _date;
 
 public:
+	UPROPERTY(BlueprintReadWrite)
 	int Score;
 
 public:
-	ScoreData(const FString pName, const int pScore);
+	FScoreData();
+	FScoreData(const FString pName, const int pScore);
+	~FScoreData();
 
 public:
 	FString ToString() const;

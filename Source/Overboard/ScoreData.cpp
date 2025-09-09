@@ -3,14 +3,29 @@
 
 #include "ScoreData.h"
 
-ScoreData::ScoreData(const FString pName, const int pScore)
+FScoreData::FScoreData()
+{
+	_name = "";
+	Score = 0;
+	_date = "";
+}
+
+FScoreData::FScoreData(const FString pName, const int pScore)
 {
 	_name = pName;
 	Score = pScore;
 	_date = FDateTime::Now().ToString(TEXT("%Y-%m-%d"));
 }
 
-FString ScoreData::ToString() const
+FString FScoreData::ToString() const
 {
 	return FString::Printf(TEXT("%s - %d - %s"), *_name, Score, *_date);
+}
+
+
+FScoreData::~FScoreData()
+{
+	_name = NULL;
+	Score = NULL;
+	_date = NULL;
 }

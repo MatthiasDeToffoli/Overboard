@@ -16,5 +16,6 @@ class OVERBOARD_API UCustomSaveGame : public USaveGame
 	GENERATED_BODY()
 	
 public:
-	TArray<ScoreData> SavedScores;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FScoreData> SavedScores;
 };

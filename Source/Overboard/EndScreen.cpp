@@ -11,6 +11,7 @@
 #include "Misc/FileHelper.h"
 #include "HAL/PlatformFilemanager.h"
 #include "CustomSaveGame.h"
+#include "ScreenLogger.h"
 
 void UEndScreen::NativeConstruct()
 {
@@ -26,8 +27,8 @@ void UEndScreen::NativeConstruct()
 void UEndScreen::OnSaveClicked()
 {
     const FString lName = _initialsTextBox->GetText().ToString();
-	_scoreDatas.Add(ScoreData(lName, _score));
-    SaveScoreToFile(lName);
+	_scoreDatas.Add(FScoreData(lName, _score));
+    SaveScoreToFile();
     ShowLeaderboard();
 }
 void UEndScreen::Init(int pScore)
@@ -60,24 +61,27 @@ void UEndScreen::OnCancelClicked()
     ShowLeaderboard();
 }
 
-void UEndScreen::SaveScoreToFile(const FString& pName)
+void UEndScreen::SaveScoreToFile()
 {
-    ScoreData lData(pName, _score);
-
+	UScreenLogger::WriteInfo("Saving score...");
     // Load or create SaveGame
     UCustomSaveGame* SaveGameInstance;
 
     if (UGameplayStatics::DoesSaveGameExist(SAVE_KEY, 0))
     {
         SaveGameInstance = Cast<UCustomSaveGame>(UGameplayStatics::LoadGameFromSlot(SAVE_KEY, 0));
+        UScreenLogger::WriteInfo("Save exist");
     }
     else
     {
         SaveGameInstance = Cast<UCustomSaveGame>(UGameplayStatics::CreateSaveGameObject(UCustomSaveGame::StaticClass()));
+        UScreenLogger::WriteInfo("Save Not exist");
     }
 
     if (SaveGameInstance)
     {
+        UScreenLogger::WriteInfo("Save");
+		UScreenLogger::WriteOnScreen(_scoreDatas.Num());
         SaveGameInstance->SavedScores = _scoreDatas;
 
         UGameplayStatics::SaveGameToSlot(SaveGameInstance, SAVE_KEY, 0);
@@ -87,15 +91,18 @@ void UEndScreen::SaveScoreToFile(const FString& pName)
 void UEndScreen::LoadScores()
 {
     _scoreDatas.Empty();
-
+    UScreenLogger::WriteInfo("Load");
     if (UGameplayStatics::DoesSaveGameExist(SAVE_KEY, 0))
     {
+        UScreenLogger::WriteInfo("Save exist for load");
         UCustomSaveGame* SaveGameInstance = Cast<UCustomSaveGame>(
             UGameplayStatics::LoadGameFromSlot(SAVE_KEY, 0));
 
         if (SaveGameInstance)
         {
+            UScreenLogger::WriteInfo("Save instance found");
             _scoreDatas = SaveGameInstance->SavedScores;
+            UScreenLogger::WriteOnScreen(_scoreDatas.Num());
         }
     }
 }
@@ -109,7 +116,7 @@ void UEndScreen::ShowLeaderboard()
 
     _scoreScrollBox->ClearChildren();
 
-    for (const ScoreData& lData : _scoreDatas)
+    for (const FScoreData& lData : _scoreDatas)
     {
         UTextBlock* ScoreLine = NewObject<UTextBlock>(this);
 		ScoreLine->SetColorAndOpacity(FLinearColor::White);
