@@ -1,16 +1,11 @@
-	// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
-#include "BaseTargetable.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "HealthComponent.h"
-#include "OverboardHUD.h"
 #include "OverboardPlayer.generated.h"
 
-
 class ABaseBullet;
+class AOverboardHUD;
 struct FInputActionInstance;
 struct FInputActionValue;
 class UCameraComponent;
@@ -19,6 +14,9 @@ class UInputComponent;
 class UInputMappingContext;
 class USpringArmComponent;
 
+/**
+ * Player character class
+ */
 UCLASS()
 class OVERBOARD_API AOverboardPlayer : public ACharacter
 {

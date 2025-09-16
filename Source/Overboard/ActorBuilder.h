@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +5,7 @@
 #include "ActorBuilder.generated.h"
 
 /**
- * 
+ * Use to avoid repeating some code present in most of the actors which can have different parents
  */
 UCLASS()
 class OVERBOARD_API UActorBuilder : public UEngine
@@ -23,7 +21,7 @@ public:
 	 *
 	 * @tparam TSubObjectType type of the suboject to create
 	 *
-	 * @return suboject created
+	 * @return subobject created
 	 */
 	template<class TSubObjectType>
 	static TSubObjectType* CreateSubObjects(AActor* pCaller, USceneComponent* pParent, FName pName);

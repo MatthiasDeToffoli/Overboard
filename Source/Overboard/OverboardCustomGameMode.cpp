@@ -1,12 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "OverboardCustomGameMode.h"
 #include "BaseTargetable.h"
+#include "EndScreen.h"
 #include "Kismet/GameplayStatics.h"
+#include "OverboardCustomGameMode.h"
+#include "OverboardHUD.h"
 #include "OverboardPlayerController.h"
 #include "CountDownScreen.h"
-#include "ScreenLogger.h"
 #include "SpawnerManager.h"
 
 AOverboardCustomGameMode::AOverboardCustomGameMode()
@@ -34,12 +32,12 @@ void AOverboardCustomGameMode::StartGame()
         _countDownScreen->RemoveFromParent();
         _countDownScreen = nullptr;
 
-        APlayerController* lPlayerComp = UGameplayStatics::GetPlayerController(this, 0);
-        if (lPlayerComp)
+        APlayerController* lPlayerController = UGameplayStatics::GetPlayerController(this, 0);
+        if (lPlayerController)
         {
-            lPlayerComp->SetInputMode(FInputModeGameOnly());
-            lPlayerComp->bShowMouseCursor = false;
-			lPlayerComp->GetHUD()->ShowHUD();
+            lPlayerController->SetInputMode(FInputModeGameOnly());
+            lPlayerController->bShowMouseCursor = false;
+			lPlayerController->GetHUD()->ShowHUD();
 
             if (ASpawnerManager* lSpawnerManager = Cast<ASpawnerManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ASpawnerManager::StaticClass())))
 			{

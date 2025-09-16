@@ -1,13 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
-#include "Components/WidgetComponent.h"
 #include "CoreMinimal.h"
-#include "HealthComponent.h"
-#include "GameFramework/Actor.h"
 #include "BaseTargetable.generated.h"
 
+class UWidgetComponent;
+class UHealthComponent;
+
+/**
+ * Base class for all actors which can be targeted by the player
+ */
 UCLASS()
 class OVERBOARD_API ABaseTargetable : public APawn
 {
@@ -85,6 +86,6 @@ public :
 	* @param EventInstigator instigator of the damage
 	* @param DamageCauser causer of the damage
 	*/
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float pDamageAmount, FDamageEvent const& pDamageEvent, AController* pEventInstigator, AActor* pDamageCauser) override;
 
 };

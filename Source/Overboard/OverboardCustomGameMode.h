@@ -1,14 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EndScreen.h"
 #include "GameFramework/GameModeBase.h"
 #include "OverboardCustomGameMode.generated.h"
 
+class UEndScreen;
+
 /**
- * 
+ * Custom game mode to manage the game flow
  */
 UCLASS()
 class OVERBOARD_API AOverboardCustomGameMode : public AGameModeBase
@@ -97,7 +96,7 @@ public:
 	/**
 	 * Called every frame
 	 *
-	 * @param deltatime between two ticks
+	 * @param pDeltatime between two ticks
 	 */
 	virtual void Tick(float pDeltaTime) override;
 

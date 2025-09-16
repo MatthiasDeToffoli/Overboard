@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -9,6 +7,9 @@
 class UProjectileMovementComponent;
 class USphereComponent;
 
+/*
+* Parent of all bullets class
+*/
 UCLASS()
 class OVERBOARD_API ABaseBullet : public AActor
 {
@@ -64,7 +65,9 @@ public:
 	/*
 	* Call when the actor hit something
 	* 
+	* @param pHitComponent the component hit
 	* @param pHitActor the actor hit
+	* @param pOtherComponent the other component involved in the hit
 	* @param pNormalImpulse the normal impulse of the hit
 	* @param pHit the hit result
 	*/

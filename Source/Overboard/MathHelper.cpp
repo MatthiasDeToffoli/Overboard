@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "MathHelper.h"
 
 int MathHelper::CrossProduct(int pA, int pB, int pC)

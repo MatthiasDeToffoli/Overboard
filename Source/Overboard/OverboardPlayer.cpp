@@ -1,24 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "OverboardPlayer.h"
+
 #include "ActorBuilder.h"
 #include "BaseBullet.h"
+#include "BaseTargetable.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Math/UnrealMathUtility.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "MathHelper.h"
-#include "ScreenLogger.h"
-#include "OverboardPlayerController.h"
 #include "OverboardCustomGameMode.h"
+#include "OverboardHUD.h"
+#include "OverboardPlayer.h"
+#include "OverboardPlayerController.h"
 
-// Sets default values
+
 AOverboardPlayer::AOverboardPlayer()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -51,15 +51,15 @@ void AOverboardPlayer::BeginPlay()
 	_IsFlying = !GetCharacterMovement()->IsMovingOnGround();
 
 	//Add Input Mapping Context
-	if (AOverboardPlayerController* PlayerController = Cast<AOverboardPlayerController>(Controller))
+	if (AOverboardPlayerController* lPlayerController = Cast<AOverboardPlayerController>(Controller))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(lPlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(_defaultMappingContext, 0);
 		}
 
 		//Get HUD
-		_playerHUD = PlayerController->GetCastHUD();
+		_playerHUD = lPlayerController->GetCastHUD();
 	}
 
 	
@@ -461,11 +461,10 @@ void AOverboardPlayer::Landing(const FHitResult& pHit)
 
 	if (lAngle < _landingYawTollerance)
 	{
-		UScreenLogger::WriteInfo("Win XP");
+		//Do the win XP here
 	}
 	else
 	{
-		UScreenLogger::WriteInfo("Lose XP");
 		_boardContainer->SetRelativeRotation(FRotator::ZeroRotator);
 	}
 

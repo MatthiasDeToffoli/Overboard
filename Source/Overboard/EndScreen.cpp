@@ -1,17 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "EndScreen.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
-#include "Components/PanelWidget.h"
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
-#include "Kismet/GameplayStatics.h"
-#include "Misc/FileHelper.h"
-#include "HAL/PlatformFilemanager.h"
 #include "CustomSaveGame.h"
-#include "ScreenLogger.h"
+#include "Kismet/GameplayStatics.h"
+#include "ScoreData.h"
 
 void UEndScreen::NativeConstruct()
 {
@@ -63,46 +57,38 @@ void UEndScreen::OnCancelClicked()
 
 void UEndScreen::SaveScoreToFile()
 {
-	UScreenLogger::WriteInfo("Saving score...");
     // Load or create SaveGame
-    UCustomSaveGame* SaveGameInstance;
+    UCustomSaveGame* lSaveGameInstance;
 
     if (UGameplayStatics::DoesSaveGameExist(SAVE_KEY, 0))
     {
-        SaveGameInstance = Cast<UCustomSaveGame>(UGameplayStatics::LoadGameFromSlot(SAVE_KEY, 0));
-        UScreenLogger::WriteInfo("Save exist");
+        lSaveGameInstance = Cast<UCustomSaveGame>(UGameplayStatics::LoadGameFromSlot(SAVE_KEY, 0));
     }
     else
     {
-        SaveGameInstance = Cast<UCustomSaveGame>(UGameplayStatics::CreateSaveGameObject(UCustomSaveGame::StaticClass()));
-        UScreenLogger::WriteInfo("Save Not exist");
+        lSaveGameInstance = Cast<UCustomSaveGame>(UGameplayStatics::CreateSaveGameObject(UCustomSaveGame::StaticClass()));
     }
 
-    if (SaveGameInstance)
+    if (lSaveGameInstance)
     {
-        UScreenLogger::WriteInfo("Save");
-		UScreenLogger::WriteOnScreen(_scoreDatas.Num());
-        SaveGameInstance->SavedScores = _scoreDatas;
+        lSaveGameInstance->SavedScores = _scoreDatas;
 
-        UGameplayStatics::SaveGameToSlot(SaveGameInstance, SAVE_KEY, 0);
+        UGameplayStatics::SaveGameToSlot(lSaveGameInstance, SAVE_KEY, 0);
     }
 }
 
 void UEndScreen::LoadScores()
 {
     _scoreDatas.Empty();
-    UScreenLogger::WriteInfo("Load");
+
     if (UGameplayStatics::DoesSaveGameExist(SAVE_KEY, 0))
     {
-        UScreenLogger::WriteInfo("Save exist for load");
-        UCustomSaveGame* SaveGameInstance = Cast<UCustomSaveGame>(
+        UCustomSaveGame* lSaveGameInstance = Cast<UCustomSaveGame>(
             UGameplayStatics::LoadGameFromSlot(SAVE_KEY, 0));
 
-        if (SaveGameInstance)
+        if (lSaveGameInstance)
         {
-            UScreenLogger::WriteInfo("Save instance found");
-            _scoreDatas = SaveGameInstance->SavedScores;
-            UScreenLogger::WriteOnScreen(_scoreDatas.Num());
+            _scoreDatas = lSaveGameInstance->SavedScores;
         }
     }
 }
@@ -118,12 +104,12 @@ void UEndScreen::ShowLeaderboard()
 
     for (const FScoreData& lData : _scoreDatas)
     {
-        UTextBlock* ScoreLine = NewObject<UTextBlock>(this);
-		ScoreLine->SetColorAndOpacity(FLinearColor::White);
-		ScoreLine->SetJustification(ETextJustify::Center);
-		ScoreLine->Font.Size = 50;
-        ScoreLine->SetText(FText::FromString(lData.ToString()));
-        _scoreScrollBox->AddChild(ScoreLine);
+        UTextBlock* lScoreLine = NewObject<UTextBlock>(this);
+		lScoreLine->SetColorAndOpacity(FLinearColor::White);
+		lScoreLine->SetJustification(ETextJustify::Center);
+		lScoreLine->Font.Size = 50;
+        lScoreLine->SetText(FText::FromString(lData.ToString()));
+        _scoreScrollBox->AddChild(lScoreLine);
     }
 }
 

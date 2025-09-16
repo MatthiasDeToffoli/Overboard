@@ -1,15 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseEnemy.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTTaskFlyingMoveTo.generated.h"
 
+class ABaseEnemy;
 
 /**
- * 
+ * Task to make the enemy fly to the target location
  */
 UCLASS()
 class OVERBOARD_API UBTTaskFlyingMoveTo : public UBTTaskNode

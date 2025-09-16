@@ -1,14 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "HUDWidget.h"
 #include "OverboardHUD.generated.h"
 
+class UHUDWidget;
+
 /**
- * 
+ * Global Player HUD class
  */
 UCLASS()
 class OVERBOARD_API AOverboardHUD : public AHUD
@@ -49,7 +48,13 @@ public:
 	*/
 	void UpdateScore(int pScore);
 
+	/**
+	* Hide the HUD
+	*/
 	void HideHUD();
 
+	/*
+	* Show the HUD
+	**/
 	void ShowHUD() override;
 };

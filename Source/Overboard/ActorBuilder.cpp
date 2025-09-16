@@ -1,16 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "ActorBuilder.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include <Components/SphereComponent.h>
-#include <GameFramework/ProjectileMovementComponent.h>
 
-// Explicit template instantiation for the types needed-----------------------------------------------------------------------------------------------------------------------
+// Explicit templates instantiation for the types needed to avoid errors on the method CreateSubObjects
 template USceneComponent* UActorBuilder::CreateSubObjects<USceneComponent>(AActor*, USceneComponent*, FName);
 template UStaticMeshComponent* UActorBuilder::CreateSubObjects<UStaticMeshComponent>(AActor*, USceneComponent*, FName);
 template USpringArmComponent* UActorBuilder::CreateSubObjects<USpringArmComponent>(AActor*, USceneComponent*, FName);
@@ -19,7 +14,6 @@ template UCameraComponent* UActorBuilder::CreateSubObjects<UCameraComponent>(AAc
 template UWidgetComponent* UActorBuilder::CreateSubObjects<UWidgetComponent>(AActor*, USceneComponent*, FName);
 template USphereComponent* UActorBuilder::CreateSubObjects<USphereComponent>(AActor*, USceneComponent*, FName);
 
-//Methodes-----------------------------------------------------------------------------------------------------------------------
 template<class TSubObjectType>
 TSubObjectType* UActorBuilder::CreateSubObjects(AActor* pCaller, USceneComponent* pParent, FName pName)
 {

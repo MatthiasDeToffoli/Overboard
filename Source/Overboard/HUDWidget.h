@@ -1,15 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
-#include <Components/ProgressBar.h>
-#include <Components/TextBlock.h>
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "HUDWidget.generated.h"
 
+class UProgressBar;
+class UTextBlock;
+
 /**
- * 
+ * Widget showing the player HUD (Health bar, score, etc.)
  */
 UCLASS()
 class OVERBOARD_API UHUDWidget : public UUserWidget
@@ -17,9 +16,15 @@ class OVERBOARD_API UHUDWidget : public UUserWidget
 	GENERATED_BODY()
 	
 protected:
+	/**
+	 * Health bar showing the player's health
+	 */
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* _healthBar;
 
+	/**
+	 * Text block showing the player's score
+	 */
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* _scoreText;
 

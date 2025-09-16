@@ -1,15 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include <AIController.h>
-#include <Components/SphereComponent.h>
 #include "CoreMinimal.h"
 #include "BaseTargetable.h"
 #include "BaseEnemy.generated.h"
 
+class USphereComponent;
+
 /**
- * 
+ * Parent of all enemies class
  */
 UCLASS()
 class OVERBOARD_API ABaseEnemy : public ABaseTargetable

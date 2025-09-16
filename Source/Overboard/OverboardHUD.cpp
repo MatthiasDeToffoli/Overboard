@@ -1,8 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
+#include "HUDWidget.h"
 #include "OverboardHUD.h"
-#include "ScreenLogger.h"
 
 void AOverboardHUD::BeginPlay()
 {
@@ -22,7 +19,6 @@ void AOverboardHUD::BeginPlay()
 		}
 	}
 }
-
 
 void AOverboardHUD::UpdateHealth(float pHealth, float pMaxHealth)
 {

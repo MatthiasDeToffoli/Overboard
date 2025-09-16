@@ -1,15 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BaseTargetable.h"
 #include "ActorBuilder.h"
+#include "Components/WidgetComponent.h"
+#include "HealthComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include "OverboardPlayerController.h"
 
-// Sets default values
+
 ABaseTargetable::ABaseTargetable()
 {
- 	// No necessary yet
 	PrimaryActorTick.bCanEverTick = false;
 
 	_mainContainer = UActorBuilder::CreateSubObjects<USceneComponent>(this,RootComponent, "Main container");
@@ -47,14 +45,14 @@ void ABaseTargetable::UpdateTargetRotation(FVector pPlayerPos, float pDeltaTime)
     _targetWidgetComponent->SetWorldLocation(lNewWidgetPos);
 
     // Make the widget face the target actor
-    FRotator TargetRotation = UKismetMathLibrary::MakeRotFromX(pPlayerPos - lNewWidgetPos);
-    _targetWidgetComponent->SetWorldRotation(TargetRotation);
+    FRotator lTargetRotation = UKismetMathLibrary::MakeRotFromX(pPlayerPos - lNewWidgetPos);
+    _targetWidgetComponent->SetWorldRotation(lTargetRotation);
 
 }
 
-float ABaseTargetable::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float ABaseTargetable::TakeDamage(float pDamageAmount, FDamageEvent const& pDamageEvent, AController* pEventInstigator, AActor* pDamageCauser)
 {
-	if (_healthComponent->ApplyDamage(DamageAmount))
+	if (_healthComponent->ApplyDamage(pDamageAmount))
 	{
 		if (AOverboardPlayerController* lPlayerCont = Cast<AOverboardPlayerController>(GetWorld()->GetFirstPlayerController()))
 		{
@@ -63,5 +61,5 @@ float ABaseTargetable::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 		
 		Destroy();
 	}
-	return DamageAmount;
+	return pDamageAmount;
 }
