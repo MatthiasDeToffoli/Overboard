@@ -5,10 +5,12 @@
 #include "OverboardPlayer.generated.h"
 
 class ABaseBullet;
+class ABaseTargetable;
 class AOverboardHUD;
 struct FInputActionInstance;
 struct FInputActionValue;
 class UCameraComponent;
+class UHealthComponent;
 class UInputAction;
 class UInputComponent;
 class UInputMappingContext;
@@ -30,127 +32,127 @@ private:
 	 *Spring arm for main camera 
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	USpringArmComponent* _springArm;
+	USpringArmComponent* springArm_;
 
 	/**
 	 *Offset between spring arm orientation and board container orientation
 	 */
-	FRotator _springArmOrientationOffset;
+	FRotator springArmOrientationOffset_;
 
 	/**
 	* speed of the spring arm rotation lerp per second
 	*/
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _springArmRotationSpeed = 0.2f;
+	float springArmRotationSpeed_ = 0.2f;
 
 	/**
 	* Spring arm orientation tolerance for pitch and roll
 	*/
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _springArmOrientationTolerance = 0.001f;
+	float springArmOrientationTolerance_ = 0.001f;
 
 	/**
 	* Time since the spring arm start to re ajuste it's rotation
 	*/
-	float _springArmCurrentRotationTime;
+	float springArmCurrentRotationTime_;
 
 	/**
 	* Spring arm length when the character is not on ground
 	*/
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float SpringArmAirLength = 400;
+	float springArmAirLength_ = 400;
 
 	/**
 	 *Offset between spring arm orientation when the character is not on ground
 	 */
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	FRotator _springArmAirOrientationOffset;
+	FRotator springArmAirOrientationOffset_;
 
 	/**
 	* speed of the spring arm rotation lerp per secondwhen the character is not on ground
 	*/
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _springArmAirRotationSpeed = 0.2f;
+	float springArmAirRotationSpeed_ = 0.2f;
 
 	/**
 	* Spring arm orientation tolerance for pitch and roll when the character is not on ground
 	*/
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _springArmAirOrientationTolerance = 0.001f;
+	float springArmAirOrientationTolerance_ = 0.001f;
 
 	/**
 	* Time since the spring arm start to re ajuste it's rotation when the character is not on ground
 	*/
-	float _springArmAirCurrentRotationTime;
+	float springArmAirCurrentRotationTime_;
 
 	/**
 	* Time since the spring arm start to re ajuste it's rotation when the character is not on ground
 	*/
-	float _springArmResetYawTime;
+	float springArmResetYawTime_;
 
 	/**
 	 * Main camera
 	 */
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	UCameraComponent* _mainCamera;
+	UCameraComponent* mainCamera_;
 
 	/// <summary>
 	/// Maximum value in degrees of camera yaw orientation control.
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _maxCameraYaw = 30;
+	float maxCameraYaw_ = 30;
 
 	/// <summary>
 	/// Maximum value in degrees of camera pitch orientation control.
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _maxCameraPitchControlled = 30;
+	float maxCameraPitchControlled_ = 30;
 
 	/// <summary>
 	/// Maximum value in degrees of camera orientation control.
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float _cameraOrientationSpeed = 5;
+	float cameraOrientationSpeed_ = 5;
 
 	/// <summary>
 	/// Base camera relative orientation
 	/// </summary>
-	FRotator _baseCameraOrientation;
+	FRotator baseCameraOrientation_;
 
 	/// <summary>
 	/// If the player is moving the camera's yaw
 	/// </summary>
-	bool _isControllingCameraYaw = false;
+	bool isControllingCameraYaw_ = false;
 
 	/// <summary>
 	/// If the player is moving the camera's pitch
 	/// </summary>
-	bool _isControllingCameraPitch = false;
+	bool isControllingCameraPitch_ = false;
 
 	// Board ----------------------------------------------------------------------------------------------------
 	/**
 	 * Default position of the board, used for doing some calculation on the board movement
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Board", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* _boardContainer;
+	USceneComponent* boardContainer_;
 
 	/**
 	 * Used to know if the board is on the ground or not and avoid some error
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Board", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* _boardGroundDetector;
+	USceneComponent* boardGroundDetector_;
 
 	/**
 	 * Mesh of the board we can move with some actions 
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Board", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* _boardMesh;
+	UStaticMeshComponent* boardMesh_;
 
 	/**
 	 * Default position of the board, used for doing some calculation on the board movement
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Board", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* _boardDefaultPosition;
+	USceneComponent* boardDefaultPosition_;
 
 
 	// Input ----------------------------------------------------------------------------------------------------
@@ -159,43 +161,43 @@ private:
 	 * default MappingContext
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* _defaultMappingContext;
+	UInputMappingContext* defaultMappingContext_;
 
 	/**
 	 * Input action to accelerate
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* _accelerateInputAction;
+	UInputAction* accelerateInputAction_;
 
 	/**
 	 * Input action to turn
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* _turnInputAction;
+	UInputAction* turnInputAction_;
 
 	/**
 	 * Input action to control the camera's yaw
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* _CameraYawControlInputAction;
+	UInputAction* cameraYawControlInputAction_;
 
 	/**
 	 * Input action to control the camera's pitch
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* _CameraPitchControlInputAction;
+	UInputAction* cameraPitchControlInputAction_;
 
 	/**
 	 * Input action to jump
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* _JumpInputAction;
+	UInputAction* jumpInputAction_;
 
 	/**
 	 * Input action to shoot
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* _ShootInputAction;
+	UInputAction* shootInputAction_;
 
 	// Idle -----------------------------------------------------------------------------------------------------
 
@@ -203,18 +205,18 @@ private:
 	 * Speed if the board idle's movement
 	 */
 	UPROPERTY(EditAnywhere, Category = "Idle")
-	float _idleSpeed = 1.f;
+	float idleSpeed_ = 1.f;
 
 	/**
 	 * Intensity of the board idle's movement
 	 */
 	UPROPERTY(EditAnywhere, Category = "Idle")
-	float _idleIntensity = 1.f;
+	float idleIntensity_ = 1.f;
 
 	/**
 	 * current time used for idle movement calculation
 	 */
-	float _currentIdleTime = 0.f;
+	float currentIdleTime_ = 0.f;
 
 
 	//Movement ---------------------------------------------------------------------------------------------------
@@ -223,118 +225,118 @@ private:
 	 * Accelaration value
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Acceleration")
-	float _acceleration = 1.f;
+	float acceleration_ = 1.f;
 
 	/**
 	 * Used to calculate the Z position of the board when we're on the max speed value
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Acceleration")
-	float _boardZOffsetAccelerate = 1.f;
+	float boardZOffsetAccelerate_ = 1.f;
 
 	/**
 	 * Factor to accelerate the time to put the board on the new z position
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Acceleration")
-	float _boardZOffsetAccelerateFactor = 2.f;
+	float boardZOffsetAccelerateFactor_ = 2.f;
 
 	/**
 	 * Length of the arm when we're on the maximal speed
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Acceleration")
-	float _accelerationTargetArmLength = 500.f;
+	float accelerationTargetArmLength_ = 500.f;
 
 	/**
 	 * Factor to accelerate the time to put the srping arm to it's new length
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Acceleration")
-	float _springArmXOffsetAccelerateFactor = 2.f;
+	float springArmXOffsetAccelerateFactor_ = 2.f;
 
 	/**
 	 * Max player speed, got in the ACharacter property
 	 */
-	float _maxSpeed = 100.f;
+	float maxSpeed_ = 100.f;
 
 	/**
 	 * Deceleration value
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Deceleration")
-	float _deceleration = 1.f;
+	float deceleration_ = 1.f;
 
 	/**
 	 * braking strength value
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Deceleration")
-	float _brakingStrength = 1.f;
+	float brakingStrength_ = 1.f;
 
 	/**
 	 * Braking board pitch value.
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Deceleration")
-	float _boardBrakingPitch = 35.f;
+	float boardBrakingPitch_ = 35.f;
 
 	/**
 	* If the player is breaking or not
 	*/
-	bool _isBraking = false;
+	bool isBraking_ = false;
 
 	/**
 	 * Base target arm length when the character doesn't move
 	 */
-	float _baseTargetArmLength = 300.f;
+	float baseTargetArmLength_ = 300.f;
 
 	/**
 	 * base pitch board value for reset it where the player doesn't try to brake
 	 */
-	FRotator baseBoardRotation;
+	FRotator baseBoardRotation_;
 
 	/**
 	 * Current player speed
 	 */
-	float _currentSpeed = 0.f;
+	float currentSpeed_ = 0.f;
 
 	/**
 	 * turning speed
 	 */
 	UPROPERTY(EditAnywhere, Category = "Movement/Turning")
-	float _turningSpeed = 2.f;
+	float turningSpeed_ = 2.f;
 
 	/**
 	* Turning board roll when the value is as it max
 	*/
 	UPROPERTY(EditAnywhere, Category = "Movement/Turning")
-	float _maxTurningBoardRoll = 50;
+	float maxTurningBoardRoll_ = 50;
 
 	/**
 	* Time to swap turning roll when the player change the turning side
 	*/
 	UPROPERTY(EditAnywhere, Category = "MovementTurning")
-	float TimeToSwapTurningBoardRoll = 1.f;
+	float timeToSwapTurningBoardRoll_ = 1.f;
 
 	/**
 	* Turning board roll on the previous iteration
 	*/
-	float _previousTurningBoardRoll;
+	float previousTurningBoardRoll_;
 
 	/**
 	* Board roll used to lerp the stop turning roll rotation
 	*/
-	float _previousBoardRollForStopTurning;
+	float previousBoardRollForStopTurning_;
 
 	/**
 	* Current time used for Lerp the swipe of the turning board's roll
 	*/
-	float _currentTurningBoardRollTime;
+	float currentTurningBoardRollTime_;
 
 	/**
 	* Current time used for Lerp the swipe of the stop turning board's roll
 	*/
-	float _currentStopTurningBoardRollTime;
+	float currentStopTurningBoardRollTime_;
 
 	/**
 	* Time to swipe turning board roll
 	*/
 	UPROPERTY(EditAnywhere, Category = "Movement/Turning")
-	float _timeToSwipeTurningBoardRoll = 0.08f;
+	float timeToSwipeTurningBoardRoll_ = 0.08f;
 
 	//Air Movement ---------------------------------------------------------------------------------------------------
 
@@ -342,75 +344,75 @@ private:
 	* Speed of vertical air movement
 	*/
 	UPROPERTY(EditAnywhere, Category = "Movement/Air")
-	float _verticalAirSpeed = 0.5f;
+	float verticalAirSpeed_ = 0.5f;
 
 	/*
 	* Speed of horizontal air movement
 	*/
 	UPROPERTY(EditAnywhere, Category = "Movement/Air")
-	float _horizontalAirSpeed = 2.f;
+	float horizontalAirSpeed_ = 2.f;
 
 	/*
 	* Speed of horizontal air movement
 	*/
 	UPROPERTY(EditAnywhere, Category = "Movement/Air")
-	float _landingYawTollerance = 85;
+	float landingYawTollerance_ = 85;
 
 	/*
 	* Time to reset board container yaw when landing
 	*/
 	UPROPERTY(EditAnywhere, Category = "Movement/Air")
-	float _TimeToResetPitchWhenLanding = 1.f;
+	float timeToResetPitchWhenLanding_ = 1.f;
 
 	/*
 	* Current time used to reset board container yaw when landing
 	*/
-	float _CurrentTimeToResetPitchWhenLanding;
+	float currentTimeToResetPitchWhenLanding_;
 
 	/*
 	* if the character is flying or not
 	*/
-	bool _IsFlying;
+	bool isFlying_;
 
 	//Shoot -----------------------------------------------------------------------------------------------------
 	/**
 	* base class of the bullet
 	*/
 	UPROPERTY(EditAnywhere, Category = "Shoot")
-	TSubclassOf<ABaseBullet> _BulletClass;
+	TSubclassOf<ABaseBullet> bulletClass_;
 
 	/**
 	* Bullet speed
 	* temporary, will remove it when will manage weapons
 	*/
 	UPROPERTY(EditAnywhere, Category = "Shoot")
-	float _BulletSpeed;
+	float bulletSpeed_;
 
 	/**
 	* Spawner of the bullet
 	*/
 	UPROPERTY(EditAnywhere, Category = "Shoot")
-	USceneComponent* _BulletSpawner;
+	USceneComponent* bulletSpawner_;
 
 	/**
 	* Bullet damage
 	* temporary, will remove it when will manage weapons
 	*/
 	UPROPERTY(EditAnywhere, Category = "Shoot")
-	int _BulletDamage;
+	int bulletDamage_;
 	
 	//Health -----------------------------------------------------------------------------------------------------
 	/**
 	* Health of the player
 	*/
 	UPROPERTY(EditAnywhere, Category = "Health")
-	UHealthComponent* _healthComponent;
+	UHealthComponent* healthComponent_;
 
 	//HUD ----------------------------------------------------------------------------------------------------------
 	/**
 	* Current HUD
 	*/
-	AOverboardHUD* _playerHUD;
+	AOverboardHUD* playerHUD_;
 public:
 	//Enemies -----------------------------------------------------------------------------------------------------
 	ABaseTargetable* EnemyLocked;
@@ -670,7 +672,7 @@ public:
 	* 
 	*  @param Hit the ground in landed on
 	*/
-	virtual void Landed(const FHitResult& Hit) override;
+	virtual void Landed(const FHitResult& pHit) override;
 
 	/**
 	* When the array of enemies in view is updated
@@ -699,5 +701,5 @@ public:
 	* @param EventInstigator instigator of the damage
 	* @param DamageCauser causer of the damage
 	*/
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float pDamageAmount, FDamageEvent const& pDamageEvent, AController* pEventInstigator, AActor* pDamageCauser) override;
 };

@@ -19,39 +19,39 @@ private:
 	* Widget of the target will show to the player which is targeted
 	*/
 	UPROPERTY(EditAnywhere, Category = "Target")
-	UWidgetComponent* _targetWidgetComponent;
+	UWidgetComponent* targetWidgetComponent_;
 
 	/**
 	 * Default position of the board, used for doing some calculation on the board movement
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Graphism", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* _graphismContainer;
+	USceneComponent* graphismContainer_;
 
 	/**
 	*Main mesh of the Targetable actor
 	*/
 	UPROPERTY(EditAnywhere, Category = "Graphism")
-	UStaticMeshComponent* _mainMesh;
+	UStaticMeshComponent* mainMesh_;
 
 	//Health -----------------------------------------------------------------------------------------------------
 	/**
 	* Health of the player
 	*/
 	UPROPERTY(EditAnywhere, Category = "Health")
-	UHealthComponent* _healthComponent;
+	UHealthComponent* healthComponent_;
 	
 	//Score -----------------------------------------------------------------------------------------------------
 	/**
 	* Score to give to the player when the target is destroyed
 	*/
 	UPROPERTY(EditAnywhere, Category = "Score")
-	int _scoreToGive = 10;
+	int scoreToGive_ = 10;
 protected :
 	/**
 	 * Default position of the board, used for doing some calculation on the board movement
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "General", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* _mainContainer;
+	USceneComponent* mainContainer_;
 public:	
 	// Sets default values for this actor's properties
 	ABaseTargetable();

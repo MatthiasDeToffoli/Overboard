@@ -2,10 +2,10 @@
 
 
 #include "StartScreen.h"
-#include "OverboardCustomGameMode.h"
 #include <Kismet/GameplayStatics.h>
+#include "OverboardCustomGameMode.h"
 
-FReply UStartScreen::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+FReply UStartScreen::NativeOnMouseButtonDown(const FGeometry& pInGeometry, const FPointerEvent& pInMouseEvent)
 {
     // Get reference to your custom GameMode
     if (APlayerController* lPlayerComp = GetOwningPlayer())

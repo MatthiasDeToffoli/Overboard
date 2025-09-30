@@ -20,13 +20,13 @@ protected:
 	 * Health bar showing the player's health
 	 */
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* _healthBar;
+	UProgressBar* healthBar_;
 
 	/**
 	 * Text block showing the player's score
 	 */
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* _scoreText;
+	UTextBlock* scoreText_;
 
 public:
 	/**

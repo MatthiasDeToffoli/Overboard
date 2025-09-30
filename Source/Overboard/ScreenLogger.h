@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +5,7 @@
 #include "ScreenLogger.generated.h"
 
 /**
- * 
+ * Tool to log text on screen easily
  */
 UCLASS()
 class OVERBOARD_API UScreenLogger : public UEngine

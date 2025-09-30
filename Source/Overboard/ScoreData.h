@@ -1,12 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "ScoreData.generated.h"
 
 /**
- * 
+ * Data structure to save or load score informations
  */
 USTRUCT(BlueprintType)
 struct OVERBOARD_API FScoreData
@@ -14,20 +12,43 @@ struct OVERBOARD_API FScoreData
 	GENERATED_BODY()
 
 private:
+	/**
+	* Player's name
+	*/
 	UPROPERTY(EditAnywhere)
-	FString _name;
+	FString name_;
+
+	/**
+	* Player's score
+	*/
 	UPROPERTY(EditAnywhere)
-	FString _date;
+	int score_;
+
+	/**
+	* date of the save
+	*/
+	UPROPERTY(EditAnywhere)
+	FString date_;
 
 public:
-	UPROPERTY(BlueprintReadWrite)
-	int Score;
-
-public:
+	/**
+	* Default constructor
+	*/
 	FScoreData();
+
+	/**
+	* Constructor setting name and score
+	*/
 	FScoreData(const FString pName, const int pScore);
+
+	/**
+	* Default destructor
+	*/
 	~FScoreData();
 
 public:
+	/**
+	* Get a string representation of the score data
+	*/
 	FString ToString() const;
 };

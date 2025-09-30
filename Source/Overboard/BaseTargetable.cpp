@@ -1,6 +1,6 @@
 #include "BaseTargetable.h"
 #include "ActorBuilder.h"
-#include "Components/WidgetComponent.h"
+#include <Components/WidgetComponent.h>
 #include "HealthComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include "OverboardPlayerController.h"
@@ -10,24 +10,24 @@ ABaseTargetable::ABaseTargetable()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	_mainContainer = UActorBuilder::CreateSubObjects<USceneComponent>(this,RootComponent, "Main container");
-	_targetWidgetComponent = UActorBuilder::CreateSubObjects<UWidgetComponent>(this, _mainContainer, "Target widget component");
-	_graphismContainer = UActorBuilder::CreateSubObjects<USceneComponent>(this, _mainContainer, "Graphism container");
-	_mainMesh = UActorBuilder::CreateSubObjects<UStaticMeshComponent>(this, _graphismContainer, "Main mesh");
-	_healthComponent = CreateDefaultSubobject<UHealthComponent>("Health");
+	mainContainer_ = UActorBuilder::CreateSubObjects<USceneComponent>(this,RootComponent, "Main container");
+	targetWidgetComponent_ = UActorBuilder::CreateSubObjects<UWidgetComponent>(this, mainContainer_, "Target widget component");
+	graphismContainer_ = UActorBuilder::CreateSubObjects<USceneComponent>(this, mainContainer_, "Graphism container");
+	mainMesh_ = UActorBuilder::CreateSubObjects<UStaticMeshComponent>(this, graphismContainer_, "Main mesh");
+	healthComponent_ = CreateDefaultSubobject<UHealthComponent>("Health");
 }
 
 
 void ABaseTargetable::BeginPlay()
 {
 	Super::BeginPlay();
-	_targetWidgetComponent->SetVisibility(false, true);
+	targetWidgetComponent_->SetVisibility(false, true);
 	SetCanBeDamaged(true);
 }
 
 void ABaseTargetable::SetTargeted(bool pIsTargeted)
 {
-	_targetWidgetComponent->SetVisibility(pIsTargeted, true);
+	targetWidgetComponent_->SetVisibility(pIsTargeted, true);
 }
 
 void ABaseTargetable::UpdateTargetRotation(FVector pPlayerPos, float pDeltaTime)
@@ -38,25 +38,25 @@ void ABaseTargetable::UpdateTargetRotation(FVector pPlayerPos, float pDeltaTime)
     FVector lDirectionToPlayer = pPlayerPos - lCurrentLoc;
     lDirectionToPlayer.Normalize();
 
-    float lWidgetLocalDist = FVector::Distance(_mainMesh->GetRelativeLocation(), _targetWidgetComponent->GetRelativeLocation());
+    float lWidgetLocalDist = FVector::Distance(mainMesh_->GetRelativeLocation(), targetWidgetComponent_->GetRelativeLocation());
     FVector lNewWidgetPos = lCurrentLoc + lDirectionToPlayer * lWidgetLocalDist;
 
     // Set the widget's position
-    _targetWidgetComponent->SetWorldLocation(lNewWidgetPos);
+    targetWidgetComponent_->SetWorldLocation(lNewWidgetPos);
 
     // Make the widget face the target actor
     FRotator lTargetRotation = UKismetMathLibrary::MakeRotFromX(pPlayerPos - lNewWidgetPos);
-    _targetWidgetComponent->SetWorldRotation(lTargetRotation);
+    targetWidgetComponent_->SetWorldRotation(lTargetRotation);
 
 }
 
 float ABaseTargetable::TakeDamage(float pDamageAmount, FDamageEvent const& pDamageEvent, AController* pEventInstigator, AActor* pDamageCauser)
 {
-	if (_healthComponent->ApplyDamage(pDamageAmount))
+	if (healthComponent_->ApplyDamage(pDamageAmount))
 	{
 		if (AOverboardPlayerController* lPlayerCont = Cast<AOverboardPlayerController>(GetWorld()->GetFirstPlayerController()))
 		{
-			lPlayerCont->UpdateScore(_scoreToGive);
+			lPlayerCont->UpdateScore(scoreToGive_);
 		}
 		
 		Destroy();

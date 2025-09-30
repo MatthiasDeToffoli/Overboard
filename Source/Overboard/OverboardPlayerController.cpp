@@ -1,8 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "OverboardPlayerController.h"
+#include "BaseTargetable.h"
 #include <EnhancedInputComponent.h>
+#include "OverboardHUD.h"
+#include "OverboardPlayer.h"
 
 AOverboardPlayer* AOverboardPlayerController::GetPlayer()
 {
@@ -18,7 +18,7 @@ AOverboardPlayer* AOverboardPlayerController::GetPlayer()
 
 void AOverboardPlayerController::BeginPlay()
 {
-	_CanSelectANewTarget = true;
+	canSelectANewTarget_ = true;
 	SetScoreValue(0);
 }
 
@@ -29,8 +29,8 @@ void AOverboardPlayerController::SetupInputComponent()
 	UEnhancedInputComponent* lInput = Cast<UEnhancedInputComponent>(InputComponent);
 	if (lInput)
 	{
-		lInput->BindAction(_ChangeTargetInputAction, ETriggerEvent::Triggered, this, &AOverboardPlayerController::ChangeTarget);
-		lInput->BindAction(_ChangeTargetInputAction, ETriggerEvent::Completed, this, &AOverboardPlayerController::UnblockTargetChanging);
+		lInput->BindAction(changeTargetInputAction_, ETriggerEvent::Triggered, this, &AOverboardPlayerController::ChangeTarget);
+		lInput->BindAction(changeTargetInputAction_, ETriggerEvent::Completed, this, &AOverboardPlayerController::UnblockTargetChanging);
 	}
 }
 
@@ -42,22 +42,22 @@ void AOverboardPlayerController::ChangeTarget(const FInputActionInstance& pInsta
 	ABaseTargetable* lNewTarget;
 
 	//Player is necessary in the all method
-	if (!lPlayer || enemiesInView.Num() <= 0)
+	if (!lPlayer || enemiesInView_.Num() <= 0)
 	{
 		return;
 	}
 
 	//Get index of the new enemy to lock or set 0
-	if (lPlayer->EnemyLocked && enemiesInView.Num() > 1)
+	if (lPlayer->EnemyLocked && enemiesInView_.Num() > 1)
 	{
-		lIndex = enemiesInView.Find(lPlayer->EnemyLocked);
+		lIndex = enemiesInView_.Find(lPlayer->EnemyLocked);
 	}
 
-	if (_CanSelectANewTarget)
+	if (canSelectANewTarget_)
 	{
 		if (lIndex == INDEX_NONE)
 		{
-			lNewTarget = Cast<ABaseTargetable>(enemiesInView[0]);
+			lNewTarget = Cast<ABaseTargetable>(enemiesInView_[0]);
 		}
 		else if (lInput < 0)
 		{
@@ -69,7 +69,7 @@ void AOverboardPlayerController::ChangeTarget(const FInputActionInstance& pInsta
 		}
 
 		lPlayer->UpdateEnemyLocked(lNewTarget);
-		_CanSelectANewTarget = false;
+		canSelectANewTarget_ = false;
 	}
 }
 
@@ -79,31 +79,31 @@ ABaseTargetable* AOverboardPlayerController::GetPreviousTarget(int pIndex)
 
 	if (lNewIndex < 0)
 	{
-		lNewIndex = enemiesInView.Num() - 1;
+		lNewIndex = enemiesInView_.Num() - 1;
 	}
 
-	return Cast<ABaseTargetable>(enemiesInView[lNewIndex]);
+	return Cast<ABaseTargetable>(enemiesInView_[lNewIndex]);
 }
 
 ABaseTargetable* AOverboardPlayerController::GetNextTarget(int pIndex)
 {
 	int lNewIndex = pIndex + 1;
 
-	if (lNewIndex >= enemiesInView.Num())
+	if (lNewIndex >= enemiesInView_.Num())
 	{
 		lNewIndex = 0;
 	}
 
-	return Cast<ABaseTargetable>(enemiesInView[lNewIndex]);
+	return Cast<ABaseTargetable>(enemiesInView_[lNewIndex]);
 }
 
 void AOverboardPlayerController::UnblockTargetChanging()
 {
-	_CanSelectANewTarget = true;
+	canSelectANewTarget_ = true;
 }
 void AOverboardPlayerController::UpdateEnemiesInView(TArray<AActor*> pEnemies) 
 {
-	enemiesInView = pEnemies;
+	enemiesInView_ = pEnemies;
 	GetPlayer()->EnemiesInViewUpdated(pEnemies);
 }
 
@@ -118,20 +118,20 @@ AOverboardHUD* AOverboardPlayerController::GetCastHUD()
 
 void AOverboardPlayerController::SetScoreValue(int pVal)
 {
-	_currentScore = pVal;
+	currentScore_ = pVal;
 
 	if (AOverboardHUD* lHUD = GetCastHUD())
 	{
-		lHUD->UpdateScore(_currentScore);
+		lHUD->UpdateScore(currentScore_);
 	}
 }
 
 void AOverboardPlayerController::UpdateScore(int pScore)
 {
-	SetScoreValue(_currentScore + pScore);
+	SetScoreValue(currentScore_ + pScore);
 }
 
 int AOverboardPlayerController::GetCurrentScore() const
 {
-	return _currentScore;
+	return currentScore_;
 }

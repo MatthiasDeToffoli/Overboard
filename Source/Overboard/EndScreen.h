@@ -16,61 +16,56 @@ class OVERBOARD_API UEndScreen : public UUserWidget
 	
 private:
     /**
-    * Save file name
-    */
-    FString const SAVE_KEY = "OverboardSave";
-    
-    /**
 	* Text box to enter the player initials
     */
     UPROPERTY(meta = (BindWidget))
-    class UEditableTextBox* _initialsTextBox;
+    class UEditableTextBox* initialsTextBox_;
 
     /**
 	* Panel containing the scores scroll box
     */
     UPROPERTY(meta = (BindWidget))
-    class UPanelWidget* _leaderboardPanel;
+    class UPanelWidget* leaderboardPanel_;
 
     /**
 	* Scroll box containing the scores
     */
     UPROPERTY(meta = (BindWidget))
-    class UScrollBox* _scoreScrollBox;
+    class UScrollBox* scoreScrollBox_;
 
     /**
 	* Button to save the current score
     */
     UPROPERTY(meta = (BindWidget))
-    class UButton* _saveButton;
+    class UButton* saveButton_;
 
     /**
 	* Button to cancel saving and go directlu to the scores panel
     */
     UPROPERTY(meta = (BindWidget))
-    class UButton* _cancelButton;
+    class UButton* cancelButton_;
 
     /**
 	* Button to restart the game
     */
     UPROPERTY(meta = (BindWidget))
-    class UButton* _restartButton;
+    class UButton* restartButton_;
 
     /**
 	* Button to quit the game
     */
     UPROPERTY(meta = (BindWidget))
-    class UButton* _quitButton;
+    class UButton* quitButton_;
 
     /**
 	* All scores saved
     */
-    TArray<FScoreData> _scoreDatas;
+    TArray<FScoreData> scoreDatas_;
 
     /**
 	* Current player score
     */
-    int _score;
+    int score_;
 
 private:
     /**

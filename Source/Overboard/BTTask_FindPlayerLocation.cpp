@@ -1,7 +1,8 @@
 #include "BTTask_FindPlayerLocation.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "GameFramework/Character.h"
-#include "Kismet/GameplayStatics.h"
+#include <BehaviorTree/BlackboardComponent.h>
+#include "Constants.h"
+#include <GameFramework/Character.h>
+#include <Kismet/GameplayStatics.h>
 
 UBTTask_FindPlayerLocation::UBTTask_FindPlayerLocation()
 {
@@ -14,7 +15,7 @@ EBTNodeResult::Type UBTTask_FindPlayerLocation::ExecuteTask(UBehaviorTreeCompone
     if (lPlayer)
     {
         FVector PlayerLocation = lPlayer->GetActorLocation();
-        OwnerComp.GetBlackboardComponent()->SetValueAsVector("TargetLocation", PlayerLocation);
+        OwnerComp.GetBlackboardComponent()->SetValueAsVector(Constants::BlackBoard::kTargetLocation(), PlayerLocation);
 
         return EBTNodeResult::Succeeded;
     }

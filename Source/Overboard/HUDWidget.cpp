@@ -1,19 +1,19 @@
+#include "HUDWidget.h"
 #include <Components/ProgressBar.h>
 #include <Components/TextBlock.h>
-#include "HUDWidget.h"
 
 void UHUDWidget::UpdateHealthBar(float pHealth, float pMaxHealth)
 {
-	if (_healthBar)
+	if (healthBar_)
 	{
-		_healthBar->SetPercent(pHealth / pMaxHealth);
+		healthBar_->SetPercent(pHealth / pMaxHealth);
 	}
 }
 
 void UHUDWidget::UpdateScoreText(int32 pScore)
 {
-	if (_scoreText)
+	if (scoreText_)
 	{
-		_scoreText->SetText(FText::AsNumber(pScore));
+		scoreText_->SetText(FText::AsNumber(pScore));
 	}
 }

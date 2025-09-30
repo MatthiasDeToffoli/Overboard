@@ -7,7 +7,7 @@
 #include "StartScreen.generated.h"
 
 /**
- * 
+ * Screen representing the start of the  game
  */
 UCLASS()
 class OVERBOARD_API UStartScreen : public UUserWidget
@@ -15,6 +15,9 @@ class OVERBOARD_API UStartScreen : public UUserWidget
 	GENERATED_BODY()
 
 protected:
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	/**
+	* Native handler for mouse button down events.
+	*/
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& pInGeometry, const FPointerEvent& pInMouseEvent) override;
 	
 };

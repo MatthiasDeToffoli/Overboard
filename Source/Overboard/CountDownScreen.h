@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include <Blueprint/UserWidget.h>
 #include "CountDownScreen.generated.h"
 
 /**
@@ -16,18 +16,18 @@ private:
 	/**
 	* Current countdown value
 	*/
-	int _currentCount;
+	int currentCount_;
 
 	/**
 	* Timer handle for the countdown
 	*/
-	FTimerHandle _countdownTimerHandle;
+	FTimerHandle countdownTimerHandle_;
 
 	/**
 	* Text block showing the countdown value
 	*/
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* _countdownText;
+	class UTextBlock* countdownText_;
 	
 
 private:

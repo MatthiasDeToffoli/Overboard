@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include <GameFramework/GameModeBase.h>
 #include "OverboardCustomGameMode.generated.h"
 
 class UEndScreen;
@@ -19,25 +19,25 @@ private:
 	* offset for camera FOV to detect enemies in a largest zone
 	*/
 	UPROPERTY(EditAnywhere, Category = "Enemy targeting")
-	float _offsetCameraFOV = 20;
+	float offsetCameraFOV_ = 20;
 
 	/**
 	 * Class of the start screen to show at the beginning of the game
 	 */
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UUserWidget> _startScreenClass;
+	TSubclassOf<UUserWidget> startScreenClass_;
 
 	/**
 	 * Class of the countdown screen to show before the game starts
 	 */
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UUserWidget> _countDownScreenClass;
+	TSubclassOf<UUserWidget> countDownScreenClass_;
 
 	/**
 	 * Class of the end screen to show at the end of the game
 	 */
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UEndScreen> _endScreenClass;
+	TSubclassOf<UEndScreen> endScreenClass_;
 
 	/**
 	 * Start screen widget
@@ -45,7 +45,7 @@ private:
 	 * This screen will be shown at the beginning of the game
 	 */
 	UPROPERTY()
-	UUserWidget* _startScreen;
+	UUserWidget* startScreen_;
 	
 	/**
 	 * Start screen widget
@@ -56,7 +56,7 @@ private:
 	UUserWidget* _countDownScreen;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
-	int _countDownTime = 3;
+	int countDownTime_ = 3;
 
 	/**
 	* End screen widget
@@ -64,7 +64,7 @@ private:
 	* This screen will be shown at the end of the game
 	*/
 	UPROPERTY()
-	UEndScreen* _endScreen;
+	UEndScreen* endScreen_;
 
 public:
 	/**

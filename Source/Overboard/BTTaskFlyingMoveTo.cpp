@@ -1,7 +1,8 @@
 #include "BTTaskFlyingMoveTo.h"
 #include "AIController.h"
 #include "BaseEnemy.h"
-#include "BehaviorTree/BlackboardComponent.h"
+#include <BehaviorTree/BlackboardComponent.h>
+#include "Constants.h"
 #include "GameFramework/Pawn.h"
 
 UBTTaskFlyingMoveTo::UBTTaskFlyingMoveTo()
@@ -70,7 +71,7 @@ EBTNodeResult::Type UBTTaskFlyingMoveTo::ExecuteTask(UBehaviorTreeComponent& pOw
     if (lEnemy) 
     {
         UBlackboardComponent* lBB = pOwnerComp.GetBlackboardComponent();
-        targetLocation = lBB->GetValueAsVector("TargetLocation");  // Your blackboard key
+        targetLocation_ = lBB->GetValueAsVector(Constants::BlackBoard::kTargetLocation());  // Your blackboard key
 
         return EBTNodeResult::InProgress;
     }
@@ -87,7 +88,7 @@ void UBTTaskFlyingMoveTo::TickTask(UBehaviorTreeComponent& pOwnerComp, uint8* pN
         FVector lCurrentLocation = lEnemy->GetActorLocation();
         FCollisionQueryParams lParams;
 		lParams.AddIgnoredActor(lEnemy);
-        FVector lFinalDirection = (targetLocation - lCurrentLocation).GetSafeNormal();
+        FVector lFinalDirection = (targetLocation_ - lCurrentLocation).GetSafeNormal();
 
         FVector lRight = lEnemy->GetActorRightVector();
 
@@ -119,7 +120,7 @@ void UBTTaskFlyingMoveTo::TickTask(UBehaviorTreeComponent& pOwnerComp, uint8* pN
         FVector lNewLocation = lCurrentLocation + lFinalDirection.GetSafeNormal() * lEnemy->speed * pDeltaSeconds;
         lEnemy->SetActorLocation(lNewLocation);
 
-        if (FVector::Dist(targetLocation, lNewLocation) <= 0.0f)
+        if (FVector::Dist(targetLocation_, lNewLocation) <= 0.0f)
         {
             FinishLatentTask(pOwnerComp, EBTNodeResult::Succeeded);
         }

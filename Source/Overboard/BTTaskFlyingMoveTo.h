@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/BTTaskNode.h"
+#include <BehaviorTree/BTTaskNode.h>
 #include "BTTaskFlyingMoveTo.generated.h"
 
 class ABaseEnemy;
@@ -75,5 +75,5 @@ private:
     /// <summary>
     /// Location of the target to follow
     /// </summary>
-    FVector targetLocation;
+    FVector targetLocation_;
 };

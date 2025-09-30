@@ -1,10 +1,10 @@
-#include "BaseTargetable.h"
-#include "EndScreen.h"
-#include "Kismet/GameplayStatics.h"
 #include "OverboardCustomGameMode.h"
+#include "BaseTargetable.h"
+#include "CountDownScreen.h"
+#include "EndScreen.h"
+#include <Kismet/GameplayStatics.h>
 #include "OverboardHUD.h"
 #include "OverboardPlayerController.h"
-#include "CountDownScreen.h"
 #include "SpawnerManager.h"
 
 AOverboardCustomGameMode::AOverboardCustomGameMode()
@@ -22,7 +22,7 @@ void AOverboardCustomGameMode::BeginPlay()
 
 void AOverboardCustomGameMode::ShowStartScreen()
 {
-	_startScreen = ShowScreen(_startScreenClass);
+	startScreen_ = ShowScreen(startScreenClass_);
 }
 
 void AOverboardCustomGameMode::StartGame()
@@ -49,30 +49,30 @@ void AOverboardCustomGameMode::StartGame()
 
 void AOverboardCustomGameMode::ShowCountDownScreen()
 {
-    if (_startScreen)
+    if (startScreen_)
     {
-        _startScreen->RemoveFromParent();
-        _startScreen = nullptr;
+        startScreen_->RemoveFromParent();
+        startScreen_ = nullptr;
     }
 
-	_countDownScreen = ShowScreen(_countDownScreenClass);
+	_countDownScreen = ShowScreen(countDownScreenClass_);
 
 	if (UCountDownScreen* lCastScreen = Cast< UCountDownScreen>(_countDownScreen))
 	{
-		lCastScreen->BeginCountdown(_countDownTime);
+		lCastScreen->BeginCountdown(countDownTime_);
         UGameplayStatics::SetGamePaused(this, false);
 	}
 }
 
 void AOverboardCustomGameMode::ShowEndScreen()
 {
-	_endScreen = Cast<UEndScreen>(ShowScreen(_endScreenClass));
+	endScreen_ = Cast<UEndScreen>(ShowScreen(endScreenClass_));
 
     AOverboardPlayerController* lPlayerController = Cast<AOverboardPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 
-    if (_endScreen && lPlayerController) 
+    if (endScreen_ && lPlayerController) 
     {
-		_endScreen->Init(lPlayerController->GetCurrentScore());
+		endScreen_->Init(lPlayerController->GetCurrentScore());
     }
 }
 
@@ -127,7 +127,7 @@ void AOverboardCustomGameMode::SearchEnemiesInView()
 
     lPlayerController->GetPlayerViewPoint(lCameraLocation, lCameraRotation);
 
-    float lCameraFOV = lPlayerController->PlayerCameraManager->GetFOVAngle() + _offsetCameraFOV;
+    float lCameraFOV = lPlayerController->PlayerCameraManager->GetFOVAngle() + offsetCameraFOV_;
     float lAspectRatio = lPlayerController->PlayerCameraManager->GetCameraCacheView().AspectRatio;
 
     // Horizontal and vertical half angles in radians

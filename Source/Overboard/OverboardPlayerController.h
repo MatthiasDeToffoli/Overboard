@@ -1,15 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "OverboardPlayer.h"
 #include "OverboardPlayerController.generated.h"
 
+class ABaseTargetable;
+class AOverboardHUD;
+class AOverboardPlayer;
+struct FInputActionInstance;
+class UInputAction;
 
 /**
- * 
+ * Custom PlayerController class
  */
 UCLASS()
 class OVERBOARD_API AOverboardPlayerController : public APlayerController
@@ -20,20 +22,23 @@ private :
 	/**
 	* All enemies in player view
 	*/
-	TArray<AActor*> enemiesInView;
+	TArray<AActor*> enemiesInView_;
 
 	/**
 	 * Input action to change targeted Ennemy
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* _ChangeTargetInputAction;
+	UInputAction* changeTargetInputAction_;
 
-	bool _CanSelectANewTarget;
+	/**
+	* Flag to avoid the player to change target too fast
+	*/
+	bool canSelectANewTarget_;
 
 	/**
 	* Current player score
 	*/
-	int _currentScore;
+	int currentScore_;
 private:
 	/**
 	* Change the tarfet
@@ -101,5 +106,8 @@ public:
 	*/
 	void UpdateScore(int pToAdd);
 
+	/**
+	* Get the current player score
+	*/
 	int GetCurrentScore() const;
 };

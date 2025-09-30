@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/SaveGame.h"
+#include <GameFramework/SaveGame.h>
 #include "CustomSaveGame.generated.h"
 
 struct FScoreData;

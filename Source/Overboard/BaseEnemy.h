@@ -1,6 +1,5 @@
 #pragma once
 
-#include <AIController.h>
 #include "CoreMinimal.h"
 #include "BaseTargetable.h"
 #include "BaseEnemy.generated.h"
@@ -19,7 +18,7 @@ private:
 	/**
 	* Damage of the enemy
 	*/
-	float _damage = 10.f;
+	float damage_ = 10.f;
 
 public:
 	/// <summary>
@@ -50,7 +49,7 @@ public:
 	* Sphere collision component
 	*/
 	UPROPERTY(EditAnywhere, Category = "Collision")
-	USphereComponent* _CollisionComponent;
+	USphereComponent* collisionComponent;
 
 public:
 	/**

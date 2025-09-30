@@ -1,46 +1,46 @@
-#include "HUDWidget.h"
 #include "OverboardHUD.h"
+#include "HUDWidget.h"
 
 void AOverboardHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	
-	if (_hudWidgetClass && !_hudWidget)
+	if (hudWidgetClass_ && !hudWidget_)
 	{
-		_hudWidget = CreateWidget<UHUDWidget>(GetWorld(), _hudWidgetClass, "Health Bar");
+		hudWidget_ = CreateWidget<UHUDWidget>(GetWorld(), hudWidgetClass_, "Health Bar");
 
-		if (_hudWidget)
+		if (hudWidget_)
 		{
-			_hudWidget->AddToViewport();
+			hudWidget_->AddToViewport();
 
 
-			_hudWidget->SetVisibility(IsHidden() ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+			hudWidget_->SetVisibility(IsHidden() ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
 		}
 	}
 }
 
 void AOverboardHUD::UpdateHealth(float pHealth, float pMaxHealth)
 {
-	if (_hudWidget)
+	if (hudWidget_)
 	{
-		_hudWidget->UpdateHealthBar(pHealth, pMaxHealth);
+		hudWidget_->UpdateHealthBar(pHealth, pMaxHealth);
 	}
 }
 
 void AOverboardHUD::UpdateScore(int pScore)
 {
-	if (_hudWidget)
+	if (hudWidget_)
 	{
-		_hudWidget->UpdateScoreText(pScore);
+		hudWidget_->UpdateScoreText(pScore);
 	}
 }
 
 void AOverboardHUD::HideHUD()
 {
-	if (_hudWidget)
+	if (hudWidget_)
 	{
-		_hudWidget->SetVisibility(ESlateVisibility::Hidden);
+		hudWidget_->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 	Super::SetHidden(true);
@@ -48,9 +48,9 @@ void AOverboardHUD::HideHUD()
 
 void AOverboardHUD::ShowHUD()
 {
-	if (_hudWidget)
+	if (hudWidget_)
 	{
-		_hudWidget->SetVisibility(ESlateVisibility::Visible);
+		hudWidget_->SetVisibility(ESlateVisibility::Visible);
 	}
 
 	Super::ShowHUD();

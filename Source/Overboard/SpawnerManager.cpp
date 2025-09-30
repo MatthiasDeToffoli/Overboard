@@ -1,7 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SpawnerManager.h"
+#include "BaseTargetable.h"
 
 // Sets default values
 ASpawnerManager::ASpawnerManager()
@@ -9,7 +7,7 @@ ASpawnerManager::ASpawnerManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	_spawners = TArray<AActor*>();
+	spawners_ = TArray<AActor*>();
 }
 
 // Called when the game starts or when spawned
@@ -19,8 +17,8 @@ void ASpawnerManager::BeginPlay()
 	
     IsSpawningEnabled = false;
 	// Initialize spawn time
-	_currentSpawnTime = _maxSpawnTime;
-	_currentTimeBetweenSpawns = 0;
+	currentSpawnTime_ = maxSpawnTime_;
+	currentTimeBetweenSpawns_ = 0;
 }
 
 // Called every frame
@@ -30,9 +28,9 @@ void ASpawnerManager::Tick(float pDeltaTime)
 
     if (IsSpawningEnabled)
     {
-        _currentTimeBetweenSpawns += pDeltaTime;
+        currentTimeBetweenSpawns_ += pDeltaTime;
 
-        if (_currentTimeBetweenSpawns >= _currentSpawnTime)
+        if (currentTimeBetweenSpawns_ >= currentSpawnTime_)
             SpawnEnemy();
     }
 	
@@ -40,28 +38,23 @@ void ASpawnerManager::Tick(float pDeltaTime)
 
 void ASpawnerManager::SpawnEnemy()
 {
-    if (_spawners.Num() == 0)
+    if (spawners_.Num() == 0)
     {
         return;
     }
     else
     {
-        // Select a random spawner
-        int32 lRandomIndex = FMath::RandRange(0, _spawners.Num() - 1);
-        AActor* lSpawner = _spawners[lRandomIndex];
+        int32 lRandomIndex = FMath::RandRange(0, spawners_.Num() - 1);
+        AActor* lSpawner = spawners_[lRandomIndex];
         if (lSpawner)
         {
-            // Spawn the enemy at the selected spawner's location
             FVector lSpawnLocation = lSpawner->GetActorLocation();
             FRotator lSpawnRotation = lSpawner->GetActorRotation();
-            ABaseTargetable* lEnemy = GetWorld()->SpawnActor<ABaseTargetable>(_enemyClass, lSpawnLocation, lSpawnRotation);
+            ABaseTargetable* lEnemy = GetWorld()->SpawnActor<ABaseTargetable>(enemyClass_, lSpawnLocation, lSpawnRotation);
             if (lEnemy)
             {
-                //Get the new spawn time taking care to not go under the minimum
-                _currentSpawnTime = FMath::Max(_minSpawnTime, _currentSpawnTime - _spawnTimeDiffFactor);
-
-                // Reset spawn time, favorising the player
-                _currentTimeBetweenSpawns = 0;
+                currentSpawnTime_ = FMath::Max(minSpawnTime_, currentSpawnTime_ - spawnTimeDiffFactor_);
+                currentTimeBetweenSpawns_ = 0;
             }
         }
 

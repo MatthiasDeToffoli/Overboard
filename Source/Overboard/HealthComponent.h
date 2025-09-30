@@ -22,13 +22,13 @@ private:
 	/**
 	 * Current health point value
 	*/
-	int _CurrentHealthPoint;
+	int currentHealthPoint_;
 
 	/**
 	 * Max health point value
 	 */
 	UPROPERTY(EditAnywhere)
-	int _MaxHealthPoint;
+	int maxHealthPoint_;
 
 protected:
 	/**
@@ -65,6 +65,4 @@ public:
 	 * @param pHealPoints the healing value
 	*/
 	void Heal(int pHealPoints);
-
-		
 };

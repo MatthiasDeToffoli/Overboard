@@ -26,30 +26,30 @@ private:
 	* Container of the bullet's graphism
 	*/
 	UPROPERTY(EditAnywhere, Category = "Graphism")
-	USceneComponent* _GraphismContainer;
+	USceneComponent* graphismContainer_;
 
 	/**
 	* Bullet's graphism
 	*/
 	UPROPERTY(EditAnywhere, Category = "Graphism")
-	UStaticMeshComponent* _Graphism;
+	UStaticMeshComponent* graphism_;
 
 	/**
 	* Sphere collision component 
 	*/
 	UPROPERTY(EditAnywhere, Category = "Collision")
-	USphereComponent* _CollisionComponent;
+	USphereComponent* collisionComponent_;
 
 	/**
 	* Projectile movement
 	*/
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	UProjectileMovementComponent* _ProjectileMovement;
+	UProjectileMovementComponent* projectileMovement_;
 
 	/**
 	* Damage of the bullet
 	*/
-	int _damage;
+	int damage_;
 
 public:	
 	/**

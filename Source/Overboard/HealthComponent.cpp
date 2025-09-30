@@ -15,27 +15,27 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::Initialize()
 {
-	_CurrentHealthPoint = _MaxHealthPoint;
+	currentHealthPoint_ = maxHealthPoint_;
 }
 
 int UHealthComponent::GetHealth() const
 {
-	return _CurrentHealthPoint;
+	return currentHealthPoint_;
 }
 
 int UHealthComponent::GetMaxHealth() const
 {
-	return _MaxHealthPoint;
+	return maxHealthPoint_;
 }
 
 bool UHealthComponent::ApplyDamage(int pDamage)
 {
-	_CurrentHealthPoint -= pDamage;
-	return _CurrentHealthPoint <= 0;
+	currentHealthPoint_ -= pDamage;
+	return currentHealthPoint_ <= 0;
 }
 
 void UHealthComponent::Heal(int pHealPoints)
 {
 	
-	_CurrentHealthPoint = FMath::Min(_CurrentHealthPoint + pHealPoints, _MaxHealthPoint);
+	currentHealthPoint_ = FMath::Min(currentHealthPoint_ + pHealPoints, maxHealthPoint_);
 }

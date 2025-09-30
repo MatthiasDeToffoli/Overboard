@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/HUD.h"
+#include <GameFramework/HUD.h>
 #include "OverboardHUD.generated.h"
 
 class UHUDWidget;
@@ -19,12 +19,12 @@ private:
 	* Reference to the HUD Widget Blueprint class
 	*/
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UHUDWidget> _hudWidgetClass;
+	TSubclassOf<UHUDWidget> hudWidgetClass_;
 
 	/**
 	* Actual widget instance
 	*/
-	UHUDWidget* _hudWidget;
+	UHUDWidget* hudWidget_;
 
 protected:
 	/**

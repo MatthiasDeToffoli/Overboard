@@ -1,16 +1,16 @@
 #include "CountDownScreen.h"
-#include "Components/TextBlock.h"
+#include <Components/TextBlock.h>
 #include <Kismet/GameplayStatics.h>
 #include "OverboardCustomGameMode.h"
 
 void UCountDownScreen::BeginCountdown(int  pCountDownInit)
 {
-    _currentCount = pCountDownInit;
+    currentCount_ = pCountDownInit;
 
     UpdateCountdown();
 
     GetWorld()->GetTimerManager().SetTimer(
-        _countdownTimerHandle,
+        countdownTimerHandle_,
         this,
         &UCountDownScreen::UpdateCountdown,
         1.0f,
@@ -20,20 +20,20 @@ void UCountDownScreen::BeginCountdown(int  pCountDownInit)
 
 void UCountDownScreen::UpdateCountdown()
 {
-    if (_countdownText)
+    if (countdownText_)
     {
-        if (_currentCount > 0)
+        if (currentCount_ > 0)
         {
-            _countdownText->SetText(FText::AsNumber(_currentCount));
+            countdownText_->SetText(FText::AsNumber(currentCount_));
         }
-        else if(_currentCount > -1)
+        else if(currentCount_ > -1)
         {
-            _countdownText->SetText(FText::FromString(TEXT("Start!")));
+            countdownText_->SetText(FText::FromString(TEXT("Start!")));
         }
         else 
         {
             // Stop timer
-            GetWorld()->GetTimerManager().ClearTimer(_countdownTimerHandle);
+            GetWorld()->GetTimerManager().ClearTimer(countdownTimerHandle_);
 
             // Call GameMode StartGame()
             if (AOverboardCustomGameMode* lGameMode = Cast<AOverboardCustomGameMode>(UGameplayStatics::GetGameMode(this)))
@@ -45,6 +45,6 @@ void UCountDownScreen::UpdateCountdown()
             RemoveFromParent();
         }
 
-        --_currentCount;
+        --currentCount_;
     }
 }
