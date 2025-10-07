@@ -53,7 +53,7 @@ private:
 	 * This screen will be shown at the beginning of the game
 	 */
 	UPROPERTY()
-	UUserWidget* _countDownScreen;
+	UUserWidget* countDownScreen_;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	int countDownTime_ = 3;

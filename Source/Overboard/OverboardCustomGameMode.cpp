@@ -27,10 +27,10 @@ void AOverboardCustomGameMode::ShowStartScreen()
 
 void AOverboardCustomGameMode::StartGame()
 {
-    if (_countDownScreen)
+    if (countDownScreen_)
     {
-        _countDownScreen->RemoveFromParent();
-        _countDownScreen = nullptr;
+        countDownScreen_->RemoveFromParent();
+        countDownScreen_ = nullptr;
 
         APlayerController* lPlayerController = UGameplayStatics::GetPlayerController(this, 0);
         if (lPlayerController)
@@ -55,9 +55,9 @@ void AOverboardCustomGameMode::ShowCountDownScreen()
         startScreen_ = nullptr;
     }
 
-	_countDownScreen = ShowScreen(countDownScreenClass_);
+	countDownScreen_ = ShowScreen(countDownScreenClass_);
 
-	if (UCountDownScreen* lCastScreen = Cast< UCountDownScreen>(_countDownScreen))
+	if (UCountDownScreen* lCastScreen = Cast< UCountDownScreen>(countDownScreen_))
 	{
 		lCastScreen->BeginCountdown(countDownTime_);
         UGameplayStatics::SetGamePaused(this, false);

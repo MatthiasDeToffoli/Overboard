@@ -163,12 +163,11 @@ void AOverboardPlayer::ManageAcceleration(float pValue)
 
 void AOverboardPlayer::Accelerate(float pValue)
 {
+
 	isBraking_ = false;
 	currentSpeed_ = FMath::Min(currentSpeed_ + acceleration_ * pValue, maxSpeed_);
 
 	SetBoardPitch(baseBoardRotation_.Pitch);
-
-	currentSpeed_ = FMath::Max(currentSpeed_ - deceleration_, 0);
 
 	LerpCameraArmForAcceleration();
 
